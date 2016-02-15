@@ -1,0 +1,34 @@
+{
+  "name": "all-the-radars",
+  "version": "1.0.0",
+  "description": "Information visualization project showing geospatial data from radar observations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/grunt dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/klaseskilson/tnm048-all-the-radars.git"
+  },
+  "author": "Klas Eskilson, Johan Reimann",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/klaseskilson/tnm048-all-the-radars/issues"
+  },
+  "homepage": "https://github.com/klaseskilson/tnm048-all-the-radars#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-concat-css": "^0.3.1",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-http-server": "^1.13.0",
+    "load-grunt-tasks": "^3.4.0"
+  },
+  "dependencies": {
+    "d3": "^3.5.15",
+    "lodash": "^4.3.0"
+  }
+}
