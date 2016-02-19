@@ -54,9 +54,7 @@ module.exports = function(grunt) {
     },
     concat_css: {
       all: {
-        src: ['node_modules/bootstrap/dist/css/bootstrap.min.css',
-          'node_modules/colorbrewer/colorbrewer.css',
-        ],
+        src: [],
         dest: 'dist/libs.css'
       }
     }
