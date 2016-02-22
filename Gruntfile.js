@@ -54,7 +54,7 @@ module.exports = function(grunt) {
     },
     concat_css: {
       all: {
-        src: [],
+        src: ['node_modules/normalize.css/normalize.css'],
         dest: 'dist/libs.css'
       }
     }
