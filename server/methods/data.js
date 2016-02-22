@@ -27,20 +27,17 @@ Meteor.methods({
 
         // split data on `;`
         let values = line.split(';');
-        console.log(JSON.stringify(values));
         let newData = {
-          taxiId: values[keys.id],
+          taxiId: parseFloat(values[keys.id]),
+          // parse date using moment
           date: moment(values[keys.date], 'YYYY-MM-DD HH:mm:ss').toDate(),
-          x_coord: values[keys.x_coord],
-          y_coord: values[keys.y_coord],
-          hired: values[keys.hired] === 't' ? true : false
+          x_coord: parseFloat(values[keys.x_coord]),
+          y_coord: parseFloat(values[keys.y_coord]),
+          hired: values[keys.hired] === 't'
         };
-
-        console.log(JSON.stringify(newData), newData.date);
-
+        // add to collection!
         Taxis.insert(newData);
       });
-      console.log('done!');
     }));
   },
 });
