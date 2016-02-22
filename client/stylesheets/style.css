@@ -4,3 +4,20 @@ html, body, #map {
 	margin: 0;
 	padding: 0;
 }
+
+.taxis, .taxis svg {
+  position: absolute;
+}
+
+.taxis svg {
+  width: 60px;
+  height: 20px;
+  padding-right: 100px;
+  font: 10px sans-serif;
+}
+
+.taxis circle {
+  fill: red;
+  stroke: darkred;
+  stroke-width: 1px;
+}
