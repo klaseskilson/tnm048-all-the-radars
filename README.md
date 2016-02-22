@@ -1,6 +1,6 @@
-# All the radars
+# All the taxis
 
-## Setup and runInBackground
+## Setup and run
 
 To install all dependencies, run
 

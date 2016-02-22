@@ -48,7 +48,7 @@ module.exports = function(grunt) {
         dest: 'dist/libs.js'
       },
       client: {
-        src: ['js/**/*.js'],
+        src: ['js/**/*.js', '!js/main.js', 'js/main.js'],
         dest: 'dist/<%= pkg.name %>.js'
       }
     },
