@@ -2,14 +2,10 @@
 
 ## Setup and run
 
-To install all dependencies, run
+This is a `meteor` application. Make sure you [have it installed](https://www.meteor.com/install), and then run
 
 ```bash
-npm install
+meteor
 ```
 
-To run server and watch file changes, run
-
-```bash
-npm start
-```
+in the root of this application to install depenencies and run the app.
