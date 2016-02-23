@@ -6,6 +6,7 @@ Meteor.methods({
    */
   importData: function(fileName) {
     if (Meteor.isClient) return;
+    console.log(`Importing data from '${fileName}'...`);
     // read file!
     let fs = Npm.require('fs');
     const keys = {
@@ -39,5 +40,71 @@ Meteor.methods({
         Taxis.insert(newData);
       });
     }));
+    console.log('done!');
+  },
+
+  createTimeline: function () {
+    if (Meteor.isClient) return;
+    console.log('Creating timeline data...');
+
+    // empty previous data
+    Timeline.remove({});
+
+    // prepare placeholder for resolution
+    let timelineData = {
+      minute: {},
+      tenMinute: {},
+      hour: {}
+    };
+
+    let timestampMethods = {
+      minute: function (d) {
+        d.setSeconds(0);
+        d.setMilliseconds(0);
+        return d.getTime();
+      },
+      tenMinute: function (d) {
+        let newMinute = Math.floor(d.getMinutes() / 10) * 10;
+        d.setMinutes(newMinute);
+        d.setSeconds(0);
+        d.setMilliseconds(0);
+        return d.getTime();
+      },
+      hour: function (d) {
+        d.setMinutes(0);
+        d.setSeconds(0);
+        d.setMilliseconds(0);
+        return d.getTime();
+      }
+    };
+
+    Taxis.find({ hired: true }).forEach((d) => {
+      _.forEach(timelineData, (entries, resolution) => {
+        let timestamp = timestampMethods[resolution](d.date);
+        if (!entries[timestamp]) {
+          entries[timestamp] = {
+            count: 0,
+            resolution: resolution
+          };
+        }
+        ++entries[timestamp].count;
+      });
+    });
+
+    _.forEach(timelineData, (entries, resolution) => {
+      _.forEach(entries, (value, timestamp) => {
+        let date = new Date();
+        date.setTime(timestamp);
+        let entry = {
+          date: date,
+          count: value.count,
+          resolution: resolution
+        };
+
+        Timeline.insert(entry);
+      });
+    });
+
+    console.log('done!');
   },
 });
