@@ -61,20 +61,20 @@ Meteor.methods({
       minute: function (d) {
         d.setSeconds(0);
         d.setMilliseconds(0);
-        return d.getTime();
+        return d;
       },
       tenMinute: function (d) {
         let newMinute = Math.floor(d.getMinutes() / 10) * 10;
         d.setMinutes(newMinute);
         d.setSeconds(0);
         d.setMilliseconds(0);
-        return d.getTime();
+        return d;
       },
       hour: function (d) {
         d.setMinutes(0);
         d.setSeconds(0);
         d.setMilliseconds(0);
-        return d.getTime();
+        return d;
       }
     };
 
@@ -88,20 +88,21 @@ Meteor.methods({
           };
         }
         ++entries[timestamp].count;
-      });
-    });
-
-    _.forEach(timelineData, (entries, resolution) => {
-      _.forEach(entries, (value, timestamp) => {
-        let date = new Date();
-        date.setTime(timestamp);
-        let entry = {
-          date: date,
-          count: value.count,
+        Timeline.update({
+          date: timestamp,
           resolution: resolution
-        };
-
-        Timeline.insert(entry);
+        }, {
+          $inc: {
+            count: 1
+          },
+          $setOnInsert: {
+            count: 1,
+            date: timestamp,
+            resolution: resolution
+          }
+        }, {
+          upsert: true
+        });
       });
     });
 
