@@ -1,23 +1,22 @@
 var theMap = new GMap();
-var dsv = d3.dsv(";", "text/plain");
 
 Template.map.onCreated(function () {
-  var self = this;
+  var template = this;
 
-  self.autorun(function () {
+  template.autorun(() => {
     var data = Template.currentData(),
-        subscription = data && data.subscription || 'getTaxisById',
-        id = data && data.id || 11228;
+        subscription = data && data.subscription || 'getTaxisByDate',
+        range = data && data.range || [new Date(2013, 02, 01), new Date(2013, 02, 31)];
 
-    self.subscribe(subscription, id);
+    template.subscribe(subscription, range, function() {
+      Tracker.afterFlush(() => {
+        theMap.addData(Taxis.find({}).fetch());
+      });
+    });
   });
 });
 
 Template.map.onRendered(function createMap() {
-  var self = this;
-  theMap.setup(self.firstNode);
-  dsv('/small-data.dsv', function (error, data) {
-    if (error) throw error;
-    theMap.addData(data);
-  });
+  var template = this;
+  theMap.setup(template.firstNode);
 });

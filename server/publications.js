@@ -4,11 +4,11 @@
  * @param  {Date}   to    - the end of the range
  * @return {Cursor}       - mongo cursor
  */
-Meteor.publish('getTaxisByDate', (from, to) => {
+Meteor.publish('getTaxisByDate', (range) => {
   return Taxis.find({
     date: {
-      $gte: from,
-      $lte: to
+      $gte: range[0],
+      $lte: range[1]
     }
   }, {
     sort: {
