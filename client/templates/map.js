@@ -1,23 +1,24 @@
 var theMap = new GMap();
 
 Template.map.onCreated(function () {
-  var template = this;
+  Session.setDefault('dataContext', {
+    subscription: 'getTaxisByDate',
+    params: [new Date(2013, 2, 1), new Date(2013, 2, 31)],
+    query: {},
+  });
 
-  template.autorun(() => {
-    var data = Template.currentData(),
-        subscription = data && data.subscription || 'getTaxisByDate',
-        range = data && data.range || [new Date(2013, 02, 01), new Date(2013, 02, 31)];
+  this.autorun(() => {
+    let { subscription, params, query } = Session.get('dataContext');
 
-    template.subscribe(subscription, range, () => {
-      // this after flush thingy ensures the template is re-renderd (if needed)
+    this.subscribe(subscription, params, () => {
+      // this after flush thingy ensures the template is re-rendered (if needed)
       Tracker.afterFlush(() => {
-        theMap.addData(TaxisCollection.find({}).fetch());
+        theMap.addData(Taxis.find(query).fetch());
       });
     });
   });
 });
 
 Template.map.onRendered(function createMap() {
-  var template = this;
-  theMap.setup(template.firstNode);
+  theMap.setup(this.find('#map'));
 });

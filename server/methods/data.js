@@ -5,7 +5,6 @@ Meteor.methods({
    * @return {null}
    */
   importData: function(fileName) {
-    if (Meteor.isClient) return;
     console.log(`Importing data from '${fileName}'...`);
     // read file!
     let fs = Npm.require('fs');
@@ -43,8 +42,10 @@ Meteor.methods({
     console.log('done!');
   },
 
+  /**
+   * populate Timeline collection from contents of Taxis collection
+   */
   createTimeline: function () {
-    if (Meteor.isClient) return;
     console.log('Creating timeline data...');
 
     // empty previous data
