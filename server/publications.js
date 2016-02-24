@@ -5,7 +5,7 @@
  * @return {Cursor}       - mongo cursor
  */
 Meteor.publish('getTaxisByDate', (range) => {
-  return Taxis.find({
+  return TaxisCollection.find({
     date: {
       $gte: range[0],
       $lte: range[1]
@@ -23,8 +23,22 @@ Meteor.publish('getTaxisByDate', (range) => {
  * @return {Cursor}       - mongo cursor
  */
 Meteor.publish('getTaxisById', (id) => {
-  return Taxis.find({
+  return TaxisCollection.find({
     taxiId: id
+  }, {
+    sort: {
+      date: 1
+    }
+  });
+});
+
+/**
+ * get the timeline
+ * @return {Cursor}       - mongo cursor
+ */
+Meteor.publish('getTimeline', () => {
+  return TimelineCollection.find({
+    resolution: 'minute'
   }, {
     sort: {
       date: 1

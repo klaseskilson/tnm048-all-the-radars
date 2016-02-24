@@ -11,7 +11,7 @@ Template.map.onCreated(function () {
     template.subscribe(subscription, range, () => {
       // this after flush thingy ensures the template is re-renderd (if needed)
       Tracker.afterFlush(() => {
-        theMap.addData(Taxis.find({}).fetch());
+        theMap.addData(TaxisCollection.find({}).fetch());
       });
     });
   });
