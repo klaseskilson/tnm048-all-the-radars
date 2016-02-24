@@ -9,12 +9,15 @@ Timeline.prototype.drawTimeline = function(data) {
       height = areaDiv.height() - margin.top - margin.bottom;
 
   //Sets the scales 
+
+  console.log(height);
   var x = d3.time.scale().range([0, width]),
       y = d3.scale.linear().range([height, 0]);
 
   //Sets the axis 
   var xAxis = d3.svg.axis().scale(x).orient("bottom"),
-      yAxis = d3.svg.axis().scale(y).orient("left");
+      yAxis = d3.svg.axis().scale(y).orient("left")
+       .ticks([5]);
 
   //Assigns the brush to the chart's x axis
   var brush = d3.svg.brush()
@@ -56,6 +59,10 @@ Timeline.prototype.drawTimeline = function(data) {
           .attr("class", "x axis")
           .attr("transform", "translate(0," + height + ")")
           .call(xAxis);
+
+  context.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
 
   //Appends the brush 
   context.append("g")
