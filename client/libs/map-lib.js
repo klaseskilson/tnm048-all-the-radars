@@ -26,29 +26,35 @@ GMap.prototype.addData = function(data) {
       .attr("class", "taxis");
 
     self.overlay.draw = function() {
-      var projection = this.getProjection(),
-        padding = 10;
+      var projection = self.overlay.getProjection(),
+        stroke = 10,
+        radius = 4;
 
       var marker = self.layer.selectAll("svg")
-        .data(data)
-        //.each(transform) // update existing markers
+        .data(d3.entries(data))
+        .each(transform)
         .enter().append("svg")
         .each(transform)
-        .on('click', select)
-        .attr("class", "marker");
+        .attr("class", "marker")
+        .style({
+          width: `${(radius + stroke) * 2}px`,
+          height: `${(radius + stroke) * 2}px`,
+        });
 
       marker.append("circle")
-        .attr("r", 4.0)
-        .attr("cx", padding)
-        .attr("cy", padding);
+        .attr("r", radius)
+        .on('click', select)
+        .style('stroke-widht', stroke)
+        .attr("cx", radius + stroke)
+        .attr("cy", radius + stroke);
 
       function transform (d) {
         let elem = this;
-        d = new google.maps.LatLng(d.y_coord, d.x_coord);
+        d = new google.maps.LatLng(d.value.y_coord, d.value.x_coord);
         d = projection.fromLatLngToDivPixel(d);
         return d3.select(elem)
-            .style("left", (d.x - padding) + "px")
-            .style("top", (d.y - padding) + "px");
+            .style("left", (d.x) + "px")
+            .style("top", (d.y) + "px");
       }
       function select (d) {
         let elem = this;
@@ -70,9 +76,9 @@ GMap.prototype.addData = function(data) {
 GMap.prototype.select = function (datum) {
   let newContext = {
     subscription: 'getTaxisById',
-    params: datum.taxiId,
+    params: datum.value.taxiId,
     query: {
-      taxiId: datum.taxiId
+      taxiId: datum.value.taxiId
     },
   };
 
