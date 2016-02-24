@@ -2,6 +2,10 @@
   <div id="map"></div>
 
   {{#unless Template.subscriptionsReady}}
-    LOADING!
+    <div class="loading-outer">
+      <div class="loading-inner">
+        loading data...
+      </div>
+    </div>
   {{/unless}}
 </template>
