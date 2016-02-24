@@ -14,6 +14,7 @@ Template.map.onCreated(function () {
       // this after flush thingy ensures the template is re-rendered (if needed)
       Tracker.afterFlush(() => {
         theMap.addData(Taxis.find(query).fetch());
+        theMap.addData(TaxisCollection.find(query).fetch());
       });
     });
   });

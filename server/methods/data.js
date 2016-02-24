@@ -36,7 +36,7 @@ Meteor.methods({
           hired: values[keys.hired] === 't'
         };
         // add to collection!
-        Taxis.insert(newData);
+        TaxisCollection.insert(newData);
       });
     }));
     console.log('done!');
@@ -49,7 +49,7 @@ Meteor.methods({
     console.log('Creating timeline data...');
 
     // empty previous data
-    Timeline.remove({});
+    TimelineCollection.remove({});
 
     // prepare placeholder for resolution
     let timelineData = {
@@ -79,7 +79,7 @@ Meteor.methods({
       }
     };
 
-    Taxis.find({ hired: true }).forEach((d) => {
+    TaxisCollection.find({ hired: true }).forEach((d) => {
       _.forEach(timelineData, (entries, resolution) => {
         let timestamp = timestampMethods[resolution](d.date);
         if (!entries[timestamp]) {

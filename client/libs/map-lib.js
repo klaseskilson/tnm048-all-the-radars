@@ -26,12 +26,12 @@ GMap.prototype.addData = function(data) {
       .attr("class", "taxis");
 
     self.overlay.draw = function() {
-      var projection = self.overlay.getProjection(),
+      var projection = this.getProjection(),
         stroke = 10,
         radius = 4;
 
       var marker = self.layer.selectAll("svg")
-        .data(d3.entries(data))
+        .data(data)
         .each(transform)
         .enter().append("svg")
         .each(transform)
@@ -50,7 +50,7 @@ GMap.prototype.addData = function(data) {
 
       function transform (d) {
         let elem = this;
-        d = new google.maps.LatLng(d.value.y_coord, d.value.x_coord);
+        d = new google.maps.LatLng(d.y_coord, d.x_coord);
         d = projection.fromLatLngToDivPixel(d);
         return d3.select(elem)
             .style("left", (d.x) + "px")
@@ -76,9 +76,9 @@ GMap.prototype.addData = function(data) {
 GMap.prototype.select = function (datum) {
   let newContext = {
     subscription: 'getTaxisById',
-    params: datum.value.taxiId,
+    params: datum.taxiId,
     query: {
-      taxiId: datum.value.taxiId
+      taxiId: datum.taxiId
     },
   };
 
