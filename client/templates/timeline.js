@@ -1,14 +1,4 @@
 
-// Template.timeLine.onRendered(function() {
-// 	var dsv = d3.dsv(";", "text/plain");
-// 	dsv('/small-data.dsv', function (error, data) {
-//     if (error) throw error;
-
-
-//   });
-
-// });
-
 var tl = new Timeline();
 
 Template.timeLine.onCreated(function () {
@@ -22,7 +12,6 @@ Template.timeLine.onCreated(function () {
       // this after flush thingy ensures the template is re-renderd (if needed)
       Tracker.afterFlush(() => {
         tl.drawTimeline(TimelineCollection.find().fetch());
-        // theMap.addData(Taxis.find({}).fetch());
       });
     });
   });
