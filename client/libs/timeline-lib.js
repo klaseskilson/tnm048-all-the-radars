@@ -92,5 +92,10 @@ Timeline.prototype.drawTimeline = function(data) {
     var millisecond = Math.round(limits[0].getTime() + pos * (limits[1].getTime() - (limits[0].getTime())));
     var selectedMinute = new Date();
     selectedMinute.setTime(millisecond);
+    selectedMinute.setMilliseconds(0);
+    selectedMinute.setSeconds(0);
+    var dataContext = Session.get('dataContext');
+    dataContext.params = [selectedMinute, selectedMinute];
+    Session.set('dataContext', dataContext);
   };
 };

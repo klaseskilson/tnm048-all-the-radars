@@ -9,7 +9,7 @@ Template.timeLine.onCreated(function () {
       Tracker.afterFlush(() => {
         let timelineData = TimelineCollection.find().fetch();
         tl.drawTimeline(timelineData);
-
+        
         let firstDate = timelineData[0].date,
             secondDate = new Date(firstDate);
         secondDate.setMinutes(secondDate.getMinutes() + 1);
