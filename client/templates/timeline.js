@@ -1,17 +1,23 @@
-
 var tl = new Timeline();
 
 Template.timeLine.onCreated(function () {
   var template = this;
 
   template.autorun(() => {
-    var data = Template.currentData(),
-        subscription = data && data.subscription || 'getTimeline';
-
-    template.subscribe(subscription, () => {
+    template.subscribe('getTimeline', () => {
       // this after flush thingy ensures the template is re-renderd (if needed)
       Tracker.afterFlush(() => {
-        tl.drawTimeline(TimelineCollection.find().fetch());
+        let timelineData = TimelineCollection.find().fetch();
+        tl.drawTimeline(timelineData);
+
+        let firstDate = timelineData[0].date,
+            secondDate = new Date(firstDate);
+        secondDate.setMinutes(secondDate.getMinutes() + 1);
+        Session.set('dataContext', {
+          subscription: 'getTaxisByDate',
+          params: [firstDate, secondDate],
+          query: {},
+        })
       });
     });
   });

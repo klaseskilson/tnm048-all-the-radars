@@ -22,20 +22,21 @@ html, body, #map, .loading-outer {
   position: absolute;
 }
 
-.taxis svg {
-  padding-right: 100px;
-  font: 10px sans-serif;
+.taxis .marker {
+  margin: 0;
+  width: 12px;
+  height: 12px;
 }
 
-.taxis circle {
-  fill: red;
+.marker circle {
+  fill: rgba(255, 0, 0, .5);
   stroke: darkred;
   stroke-width: 1px;
   cursor: pointer;
 }
 
 .taxis circle:hover {
-  fill: rgba(255, 0, 0, .7);
+  fill: green;
 }
 
 svg {
