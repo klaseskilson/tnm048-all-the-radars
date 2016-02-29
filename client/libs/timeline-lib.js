@@ -46,13 +46,6 @@ Timeline.prototype.drawTimeline = function(data) {
     .on("drag", dragMove)
     .on('dragend', dragEnd);
 
-  context.append('rect')
-    .attr("height", 25)
-    .attr("width", 25)
-    .attr("fill", "#2394F5")
-    .data([{x: 0, y:0}])
-    .call(drag);
-
   //Appends the chart to the focus area        
   context.append("path")
           .datum(data)
@@ -69,32 +62,67 @@ Timeline.prototype.drawTimeline = function(data) {
             .attr("class", "y axis")
             .call(yAxis);
 
+    context.append('rect')
+    .attr("height", 100)
+    .attr("width", 25)
+    .attr("fill", "#2394F5")
+    .attr("opacity", 0.6)
+    .data([{x: 0, y:0}])
+    .call(drag);
+
   function dragMove(d) {
     d.x += (d3.event.dx / 2);
-    d.x = Math.max(-5, Math.min(d.x, (width / 2) - 5));
+    d.x = Math.max(-6, Math.min(d.x, (width / 2) - 6));
     d3.select(this)
         .attr('x', d.x)
         .attr('y', d.y)
         .attr("transform", "translate(" + d.x + "," + d.y + ")")
-        .attr("opacity", 0.6);
+        .attr("opacity", 0.3);
   };
 
   function dragEnd(d) {
       d3.select(this)
-        .attr('opacity', 1);
+        .attr('opacity', 0.6);
       chooseMinute(d.x);
   };
 
   function chooseMinute(x) {
-    var pos = (x + 5) / (width / 2);
+    var pos = (x + 6) / (width / 2);
     var limits = d3.extent(data.map(function(d) { return d.date; }));
-    var millisecond = Math.round(limits[0].getTime() + pos * (limits[1].getTime() - (limits[0].getTime())));
-    var selectedMinute = new Date();
-    selectedMinute.setTime(millisecond);
-    selectedMinute.setMilliseconds(0);
-    selectedMinute.setSeconds(0);
+    var millisec = Math.round(limits[0].getTime() + pos * (limits[1].getTime() - (limits[0].getTime())));
+
+    var startMin = new Date();
+    startMin.setTime(millisec);
+    startMin = closestMinute(startMin);
+    millisec = startMin.getTime();
+    startMin.setSeconds(0);
+    startMin.setMilliseconds(0);
+
+    var endMin = new Date();
+    endMin.setTime(millisec);
+    endMin.setSeconds(59);
+    endMin.setMilliseconds(999);
+
     var dataContext = Session.get('dataContext');
-    dataContext.params = [selectedMinute, selectedMinute];
+    dataContext.params = [startMin, endMin];
     Session.set('dataContext', dataContext);
   };
+
+  function closestMinute(testDate) {
+    var bestDate = data[0].date;
+    var bestDiff = Infinity;
+    var currDiff = 0;
+
+    for(var i = 0; i < data.length; ++i) {
+      currDiff = Math.abs(data[i].date - testDate);
+      if(currDiff < bestDiff){
+        bestDate = data[i].date;
+        bestDiff = currDiff;
+      } 
+      else {
+        break;
+      }
+    }
+    return bestDate;
+  }
 };
