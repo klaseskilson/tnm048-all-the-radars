@@ -2,12 +2,13 @@ Meteor.methods({
   /**
    * import data from fileName and store it in mongo collection
    * @param  {string}   fileName    location of data file
+   * @param  {number}   limit       optional limit of max num of entries
    * @return {null}
    */
-  importData: function(fileName) {
+  importData: function(fileName, limit) {
+    limit = limit || Infinity;
     console.log(`Importing data from '${fileName}'...`);
     // read file!
-    //let fs = Npm.require('fs');
     const keys = {
       id: 0,
       date: 1,
@@ -29,8 +30,8 @@ Meteor.methods({
     var index = 0;
     lineReader.on('line', Meteor.bindEnvironment((line) => {
       ++index;
-      if (index === 1 || ('' + line) === '') {
-        console.log('Skipping line', index, ':', line);
+      if (index === 1 || line === '' || index > limit) {
+        //console.log('Skipping line', index, ':', line);
         return;
       }
 
@@ -64,6 +65,13 @@ Meteor.methods({
     })).on('close', () => {
       console.log('done with', index, 'lines! Creating date index...');
       TaxisCollection.rawCollection().createIndex({ date: 1 }, (err) => {
+        console.log('done!');
+        if (err) {
+          console.log(err);
+        }
+      });
+      console.log('Creating taxiId index...')
+      TaxisCollection.rawCollection().createIndex({ taxiId: 1 }, (err) => {
         console.log('done!');
         if (err) {
           console.log(err);
@@ -119,7 +127,7 @@ Meteor.methods({
           };
         }
         ++entries[timestamp].count;
-        Timeline.update({
+        TimelineCollection.update({
           date: timestamp,
           resolution: resolution
         }, {
@@ -138,5 +146,20 @@ Meteor.methods({
     });
 
     console.log('done!');
+
+    console.log('Creating date indices...');
+    TaxisCollection.rawCollection().createIndex({ date: 1 }, (err) => {
+      console.log('done!');
+      if (err) {
+        console.log(err);
+      }
+    });
+    console.log('Creating resolution indices...');
+    TaxisCollection.rawCollection().createIndex({ resolution: 1 }, (err) => {
+      console.log('done!');
+      if (err) {
+        console.log(err);
+      }
+    });
   },
 });
