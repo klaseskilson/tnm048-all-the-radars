@@ -7,7 +7,7 @@ Meteor.methods({
   importData: function(fileName) {
     console.log(`Importing data from '${fileName}'...`);
     // read file!
-    let fs = Npm.require('fs');
+    //let fs = Npm.require('fs');
     const keys = {
       id: 0,
       date: 1,
@@ -16,30 +16,60 @@ Meteor.methods({
       hired: 4
     };
     let rootPath = process.env.PWD;
-    fs.readFile(`${rootPath}/${fileName}`, 'utf8', Meteor.bindEnvironment((err, data) => {
-      if (err) throw err;
 
-      // split data on new lines
-      let dataArray = data.split(/\n/);
-      // loop through each line
-      dataArray.forEach((line, index) => {
-        if (index === 0 || line === '') return;
+    const readline = Npm.require('readline');
+    const fs = Npm.require('fs');
 
-        // split data on `;`
-        let values = line.split(';');
-        let newData = {
-          taxiId: parseFloat(values[keys.id]),
-          // parse date using moment
-          date: moment(values[keys.date], 'YYYY-MM-DD HH:mm:ss').toDate(),
-          x_coord: parseFloat(values[keys.x_coord]),
-          y_coord: parseFloat(values[keys.y_coord]),
-          hired: values[keys.hired] === 't'
-        };
-        // add to collection!
-        TaxisCollection.insert(newData);
+    var lineReader = readline.createInterface({
+      input: fs.createReadStream(`${rootPath}/${fileName}`),
+      terminal: false,
+    });
+
+    var dataArray = [];
+    var index = 0;
+    lineReader.on('line', Meteor.bindEnvironment((line) => {
+      ++index;
+      if (index === 1 || ('' + line) === '') {
+        console.log('Skipping line', index, ':', line);
+        return;
+      }
+
+      if (index % 100000 === 0) {
+        console.log('Line', index);
+      }
+
+      // split data on `;`
+      let values = line.split(';');
+      let newData = {
+        taxiId: parseFloat(values[keys.id]),
+        // parse date using moment
+        date: moment(values[keys.date], 'YYYY-MM-DD HH:mm:ss').toDate(),
+        x_coord: parseFloat(values[keys.x_coord]),
+        y_coord: parseFloat(values[keys.y_coord]),
+        hired: values[keys.hired] === 't'
+      };
+
+      // add to collection!
+      dataArray.push(newData);
+      if (index % 10000 === 0) {
+        console.log('Adding!');
+        // insert every 10000th line
+        TaxisCollection.rawCollection().insert(dataArray, (err, doc) => {
+          if (err) {
+            console.log(err, doc);
+          }
+        });
+        dataArray = [];
+      }
+    })).on('close', () => {
+      console.log('done with', index, 'lines! Creating date index...');
+      TaxisCollection.rawCollection().createIndex({ date: 1 }, (err) => {
+        console.log('done!');
+        if (err) {
+          console.log(err);
+        }
       });
-    }));
-    console.log('done!');
+    });
   },
 
   /**
