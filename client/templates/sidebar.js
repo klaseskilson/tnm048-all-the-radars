@@ -1,5 +1,5 @@
 Template.sidebar.helpers({
-  hideSidebar(value) {
+  hideSidebar (value) {
     value = value || true;
     let dataContext = Session.get('dataContext');
     let subscription = dataContext && dataContext.subscription;
@@ -12,11 +12,5 @@ Template.sidebar.events({
     let dataContext = Session.get('dataContext');
     dataContext.subscription = 'getTaxisByDate';
     Session.set('dataContext', dataContext);
-  }
-});
-
-Template.calendar.helpers({
-  weeks() {
-    return [1, 2, 3, 4, 5];
   }
 });

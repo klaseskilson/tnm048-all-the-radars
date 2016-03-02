@@ -38,7 +38,7 @@ Meteor.publish('getTaxisById', (id) => {
  */
 Meteor.publish('getTimeline', () => {
   return TimelineCollection.find({
-    resolution: 'minute'
+    resolution: 'tenMinute'
   }, {
     sort: {
       date: 1

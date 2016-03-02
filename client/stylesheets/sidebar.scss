@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   width: $sidebarWidth;
-  height: unquote('calc(100% - #{$timelineHeight})');
+  max-height: unquote('calc(100% - #{$timelineHeight})');
   transition: right .2s ease-in-out;
   box-sizing: border-box;
   right: 0;
@@ -39,5 +39,12 @@
 }
 
 .sidebar__body {
-  padding: $padding
+  margin-top: $padding;
+}
+
+.sidebar__body__title {
+  margin: 0 0 ($padding / 2);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  padding: 0 ($padding / 3);
 }

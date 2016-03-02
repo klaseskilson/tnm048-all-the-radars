@@ -65,14 +65,21 @@ Meteor.methods({
     })).on('close', () => {
       console.log('done with', index, 'lines! Creating date index...');
       TaxisCollection.rawCollection().createIndex({ date: 1 }, (err) => {
-        console.log('done!');
+        console.log('done (date)!');
         if (err) {
           console.log(err);
         }
       });
       console.log('Creating taxiId index...')
       TaxisCollection.rawCollection().createIndex({ taxiId: 1 }, (err) => {
-        console.log('done!');
+        console.log('done (taxiId)!');
+        if (err) {
+          console.log(err);
+        }
+      });
+      console.log('Creating hired index...')
+      TaxisCollection.rawCollection().createIndex({ hired: 1 }, (err) => {
+        console.log('done (hired)!');
         if (err) {
           console.log(err);
         }
@@ -87,15 +94,17 @@ Meteor.methods({
     console.log('Creating timeline data...');
 
     // empty previous data
+    console.log('Emptying previous data...');
     TimelineCollection.remove({});
 
-    // prepare placeholder for resolution
+    // prepare data for different resolutions
     let timelineData = {
       minute: {},
       tenMinute: {},
       hour: {}
     };
 
+    // methods for the different resolutions
     let timestampMethods = {
       minute: function (d) {
         d.setSeconds(0);
@@ -117,31 +126,36 @@ Meteor.methods({
       }
     };
 
+    console.log('Counting traffic...');
+    let index = 0;
     TaxisCollection.find({ hired: true }).forEach((d) => {
+      ++index;
       _.forEach(timelineData, (entries, resolution) => {
         let timestamp = timestampMethods[resolution](d.date);
-        if (!entries[timestamp]) {
-          entries[timestamp] = {
+        let key = `${timestamp}_${resolution}`;
+        if (!entries[key]) {
+          entries[key] = {
             count: 0,
-            resolution: resolution
+            date: timestamp,
+            resolution: resolution,
           };
         }
-        ++entries[timestamp].count;
-        TimelineCollection.update({
-          date: timestamp,
-          resolution: resolution
-        }, {
-          $inc: {
-            count: 1
-          },
-          $setOnInsert: {
-            count: 1,
-            date: timestamp,
-            resolution: resolution
-          }
-        }, {
-          upsert: true
-        });
+
+        ++entries[key].count;
+      });
+      if (index % 10000 === 0) {
+        console.log('Entry nr', index);
+      }
+    });
+
+    console.log('Inserting objects...');
+    _.forEach(timelineData, (entries, resolution) => {
+      let values = _.values(entries);
+      TimelineCollection.rawCollection().insert(values, (err) => {
+        console.log('inserted values for', resolution);
+        if (err) {
+          console.log(err);
+        }
       });
     });
 
@@ -149,14 +163,14 @@ Meteor.methods({
 
     console.log('Creating date indices...');
     TaxisCollection.rawCollection().createIndex({ date: 1 }, (err) => {
-      console.log('done!');
+      console.log('done (date)!');
       if (err) {
         console.log(err);
       }
     });
     console.log('Creating resolution indices...');
     TaxisCollection.rawCollection().createIndex({ resolution: 1 }, (err) => {
-      console.log('done!');
+      console.log('done (resolution)!');
       if (err) {
         console.log(err);
       }
