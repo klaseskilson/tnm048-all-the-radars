@@ -16,7 +16,10 @@ Timeline.prototype.drawTimeline = function(data) {
       yAxis = d3.svg.axis().scale(y).orient("left")
        .ticks([5]);
 
-  //Creates the chart        
+  //Sets the sliders position
+  var sliderPosition = {x: 0, y: 0};
+
+  //Creates the chart
   var area = d3.svg.area()
       .interpolate("step")
       .x(function (d) {
@@ -29,12 +32,12 @@ Timeline.prototype.drawTimeline = function(data) {
 
   //Assigns the svg canvas to the area div
   var svg = d3.select("#timeLine").append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom);
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom);
 
   //Defines the context area
   var context = svg.append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   //Initializes the axis domains for the chart
   x.domain(d3.extent(data.map(function(d) { return d.date; })));
@@ -42,48 +45,64 @@ Timeline.prototype.drawTimeline = function(data) {
 
   //Create drag variable to move the slider
   var drag = d3.behavior.drag()
-    .origin(Object)
-    .on("drag", dragMove)
-    .on('dragend', dragEnd);
+      .origin(Object)
+      .on("drag", dragMove)
+      .on('dragend', dragEnd);
+
+  context.append("rect")
+      .attr("height", height)
+      .attr("width", width)
+      .attr("opacity", 0);
 
   //Appends the chart to the focus area        
   context.append("path")
-          .datum(data)
-          .style("fill", "red")
-          .attr("d", area);
+      .datum(data)
+      .style("fill", "red")
+      .attr("d", area);
 
   //Appends the x axis 
   context.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
 
   context.append("g")
-            .attr("class", "y axis")
-            .call(yAxis);
+      .attr("class", "y axis")
+      .call(yAxis);
 
-    context.append('rect')
-    .attr("height", 100)
-    .attr("width", 25)
-    .attr("fill", "#2394F5")
-    .attr("opacity", 0.6)
-    .data([{x: 0, y:0}])
-    .call(drag);
+  context.append('rect')
+      .attr("height", 100)
+      .attr("width", 25)
+      .attr("fill", "#2394F5")
+      .attr("opacity", 0.6)
+      .attr("id", "slider")
+      .data([sliderPosition])
+      .call(drag);
+
+  context.on("click", function() {
+    moveSlider(d3.select("#slider")[0][0], ((d3.mouse(this)[0] / 2) - 6));
+  });
 
   function dragMove(d) {
-    d.x += (d3.event.dx / 2);
-    d.x = Math.max(-6, Math.min(d.x, (width / 2) - 6));
+    sliderPosition.x += (d3.event.dx / 2);
+    sliderPosition.x = Math.max(-6, Math.min(d.x, (width / 2) - 6));
     d3.select(this)
-        .attr('x', d.x)
-        .attr('y', d.y)
-        .attr("transform", "translate(" + d.x + "," + d.y + ")")
-        .attr("opacity", 0.3);
+      .attr('x', sliderPosition.x)
+      .attr("transform", "translate(" + sliderPosition.x + "," + sliderPosition.y + ")")
+      .attr("opacity", 0.3);
   };
 
   function dragEnd(d) {
-      d3.select(this)
-        .attr('opacity', 0.6);
-      chooseMinute(d.x);
+    d3.select(this)
+      .attr('opacity', 0.6);
+    chooseMinute(d.x);
+  };
+
+  function moveSlider(d, mouseX) {
+    d.setAttribute("x", mouseX);
+    sliderPosition.x = mouseX;
+    d.setAttribute("transform", "translate(" + mouseX + ",0)");
+    chooseMinute(mouseX);
   };
 
   function chooseMinute(x) {
@@ -94,12 +113,10 @@ Timeline.prototype.drawTimeline = function(data) {
     var startMin = new Date();
     startMin.setTime(millisec);
     startMin = closestMinute(startMin);
-    millisec = startMin.getTime();
     startMin.setSeconds(0);
     startMin.setMilliseconds(0);
 
-    var endMin = new Date();
-    endMin.setTime(millisec);
+    var endMin = new Date(startMin.getTime());
     endMin.setSeconds(59);
     endMin.setMilliseconds(999);
 
