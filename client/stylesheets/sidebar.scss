@@ -41,3 +41,33 @@
 .sidebar__body {
   padding: $padding
 }
+
+/* calendar style */
+.calendar__week {
+  display: flex;
+
+  & + & {
+    border-top: 1px solid #999;
+  }
+}
+
+.week__day {
+  width: (100% / 7);
+  box-sizing: border-box;
+
+  & + & {
+    border-left: 1px solid #999;
+  }
+
+}
+
+.week__day__header {
+  font-size: .8rem;
+  line-height: 1;
+  text-align: center;
+  padding: ($padding / 5);
+
+  &--gray {
+    color: #999;
+  }
+}
