@@ -27,7 +27,7 @@ GMap.prototype.addData = function(data) {
 
     self.overlay.draw = function() {
       var projection = this.getProjection(),
-        stroke = 10,
+        stroke = 1,
         radius = 4;
 
       var marker = self.layer.selectAll("svg")
@@ -44,9 +44,15 @@ GMap.prototype.addData = function(data) {
       marker.append("circle")
         .attr("r", radius)
         .on('click', select)
-        .style('stroke-widht', stroke)
+        .style('stroke-width', stroke)
         .attr("cx", radius + stroke)
-        .attr("cy", radius + stroke);
+        .attr("cy", radius + stroke)
+        .style("fill", function(d) {
+          return d.hired ? "green" : "red";
+        })
+        .style("stroke", function(d) {
+          return d.hired ? "darkgreen" : "darkred";
+        });
 
       function transform (d) {
         let elem = this;
