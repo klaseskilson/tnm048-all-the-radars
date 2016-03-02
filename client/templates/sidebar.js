@@ -46,7 +46,7 @@ Template.calendar.helpers({
         let name = day.format('D / M');
         let weekDay = day.format('ddd');
         let isMarch = day.month() === 2;
-        let count = Math.floor(Math.random() * 100);
+        let count = isMarch && Math.floor(Math.random() * 100);
 
         return {
           day,

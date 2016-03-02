@@ -8,7 +8,8 @@ GMap.prototype.setup = function(node) {
   this.map = new google.maps.Map(node, {
     zoom: 11,
     center: new google.maps.LatLng(59.33, 18.03),
-    mapTypeId: google.maps.MapTypeId.TERRAIN
+    mapTypeId: google.maps.MapTypeId.TERRAIN,
+    disableDefaultUI: true,
   });
 };
 

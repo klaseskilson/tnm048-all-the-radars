@@ -39,7 +39,14 @@
 }
 
 .sidebar__body {
-  padding: $padding
+  margin-top: $padding;
+}
+
+.sidebar__body__title {
+  margin: 0 0 ($padding / 2);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  padding: 0 ($padding / 3);
 }
 
 /* calendar style */
@@ -69,7 +76,7 @@
 
 .week__day__header {
   font-size: .7rem;
-  padding: ($padding / 5);
+  padding: ($padding / 5) 0;
   background: rgba(#000, .03);
 
   &--gray {

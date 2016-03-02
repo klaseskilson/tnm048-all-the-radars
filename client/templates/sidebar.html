@@ -18,15 +18,17 @@
 </template>
 
 <template name="calendar">
-  <div class="sidebar__body__title">
-    Bookings
-  </div>
+  <div class="sidebar__body">
+    <h2 class="sidebar__body__title">
+      Unique bookings
+    </h2>
 
-  <div class="sidebar__body__calendar">
-    {{> week fakeWeek}}
-    {{#each w in weeks}}
-      {{> week w}}
-    {{/each}}
+    <div class="sidebar__body__calendar">
+      {{> week fakeWeek}}
+      {{#each w in weeks}}
+        {{> week w}}
+      {{/each}}
+    </div>
   </div>
 </template>
 
