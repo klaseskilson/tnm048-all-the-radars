@@ -3,7 +3,7 @@ Timeline = function () {};
 Timeline.prototype.drawTimeline = function(data) {
   var areaDiv = $("#timeLine");
 
-  var margin = { top: 15, right: 15, bottom: 20, left: 15 },
+  var margin = { top: 15, right: 15, bottom: 20, left: 40 },
       width = areaDiv.width() - margin.left - margin.right,
       height = areaDiv.height() - margin.top - margin.bottom;
 
@@ -13,8 +13,7 @@ Timeline.prototype.drawTimeline = function(data) {
 
   //Sets the axis 
   var xAxis = d3.svg.axis().scale(x).orient("bottom"),
-      yAxis = d3.svg.axis().scale(y).orient("left")
-       .ticks([5]);
+      yAxis = d3.svg.axis().scale(y).orient("left").ticks([5]);
 
   //Sets the sliders position
   var sliderPosition = {x: 0, y: 0};
