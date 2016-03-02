@@ -1,3 +1,16 @@
+Template.calendar.onCreated(function () {
+  let template = this;
+  template.taxiId = new ReactiveVar(0);
+  template.autorun(function () {
+    let { subscription, params } = Session.get('dataContext');
+
+    if (subscription !== 'getTaxisById') return;
+
+    template.taxiId.set(params);
+    template.subscribe(subscription, params);
+  });
+});
+
 Template.calendar.helpers({
   fakeWeek() {
     return {
@@ -15,6 +28,24 @@ Template.calendar.helpers({
   },
 
   weeks () {
+    const format = 'M_D';
+    let taxiId = Template.instance().taxiId.get();
+    let taxiData = {};
+
+    TaxisCollection.find({
+      taxiId: taxiId,
+    }, {
+      sort: {
+        date: 1,
+      }
+    }).forEach(function (entry) {
+      let key = moment(entry.date).format(format);
+      if (!taxiData[key]) {
+        taxiData[key] = [];
+      }
+      taxiData[key].push(entry);
+    });
+
     let weeksNumbers = [0, 1, 2, 3, 4];
     let firstMarch = moment([2013, 2, 1]);
     let offset = firstMarch.day();
@@ -29,7 +60,8 @@ Template.calendar.helpers({
         let name = day.format('D / M');
         let weekDay = day.format('ddd');
         let isMarch = day.month() === 2;
-        let count = isMarch && Math.floor(Math.random() * 100);
+        let dayData = taxiData[day.format(format)];
+        let count = dayData && getUniqueBookings(dayData);
 
         return {
           day,
@@ -49,11 +81,21 @@ Template.calendar.helpers({
 });
 
 Template.week.helpers({
-  hilfe () {
-    debugger;
-  },
-
   monthClass (day) {
     return !day.isMarch && 'week__day__header--gray';
   }
 });
+
+let getUniqueBookings = (entries) => {
+  let count = 0;
+
+  _.reduce(entries, (old, entry) => {
+    if (entry.hired !== old) {
+      if (entry.hired) ++count;
+      return entry.hired;
+    }
+    return old;
+  }, null);
+
+  return count;
+};

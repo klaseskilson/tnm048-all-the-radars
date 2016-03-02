@@ -2,14 +2,19 @@
   <div class="sidebar__body">
     <h2 class="sidebar__body__title">
       Unique bookings
+      {{#unless Template.subscriptionsReady}}
+        ...
+      {{/unless}}
     </h2>
 
-    <div class="sidebar__body__calendar">
-      {{> week fakeWeek}}
-      {{#each w in weeks}}
-        {{> week w}}
-      {{/each}}
-    </div>
+    {{#if Template.subscriptionsReady}}
+      <div class="sidebar__body__calendar">
+        {{> week fakeWeek}}
+        {{#each w in weeks}}
+          {{> week w}}
+        {{/each}}
+      </div>
+    {{/if}}
   </div>
 </template>
 
