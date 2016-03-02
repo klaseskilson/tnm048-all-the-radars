@@ -1,0 +1,43 @@
+@import 'variables';
+
+#sidebar {
+  position: fixed;
+  top: 0;
+  width: $sidebarWidth;
+  height: unquote('calc(100% - #{$timelineHeight})');
+  transition: right .2s ease-in-out;
+  box-sizing: border-box;
+  right: 0;
+  background: $background;
+}
+
+#sidebar.sidebar--hidden {
+  right: - $sidebarWidth;
+}
+
+.sidebar__header {
+  display: flex;
+  font-size: $padding;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.sidebar__header__title {
+  padding: $padding;
+  background: darken($background, 10%);
+  flex-grow: 1;
+}
+
+.sidebar__header__exit {
+  cursor: pointer;
+  background: darken($background, 20%);
+  border-left: 1px solid white;
+  padding: $padding;
+  width: $padding;
+  text-align: center;
+  align-self: flex-end;
+}
+
+.sidebar__body {
+  padding: $padding
+}

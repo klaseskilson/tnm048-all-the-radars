@@ -1,10 +1,9 @@
 Timeline = function () {};
 
-
 Timeline.prototype.drawTimeline = function(data) {
   var areaDiv = $("#timeLine");
 
-  var margin = {top: areaDiv.height() - 80, right: 40, bottom: 20, left: 40},
+  var margin = { top: 15, right: 15, bottom: 20, left: 15 },
       width = areaDiv.width() - margin.left - margin.right,
       height = areaDiv.height() - margin.top - margin.bottom;
 

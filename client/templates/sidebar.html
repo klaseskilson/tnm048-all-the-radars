@@ -1,0 +1,32 @@
+<template name="sidebar">
+  <section id="sidebar" class="{{hideSidebar 'sidebar--hidden'}}">
+    <div class="sidebar__header">
+      <div class="sidebar__header__title">
+        Oh shit
+      </div>
+      <div class="sidebar__header__exit js-exit-taxi">&times;</div>
+    </div>
+    {{#unless hideSidebar}}
+      {{> info}}
+      {{> calendar}}
+    {{/unless}}
+  </section>
+</template>
+
+<template name="info">
+  fuck
+</template>
+
+<template name="calendar">
+  <div class="sidebar__body__title">
+    Bookings
+  </div>
+
+  <div class="sidebar__body__calendar">
+    {{#each weeks}}
+      <div class="calendar__week">
+        week!
+      </div>
+    {{/each}}
+  </div>
+</template>
