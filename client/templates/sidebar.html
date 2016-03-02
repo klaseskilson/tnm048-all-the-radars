@@ -23,6 +23,7 @@
   </div>
 
   <div class="sidebar__body__calendar">
+    {{> week fakeWeek}}
     {{#each w in weeks}}
       {{> week w}}
     {{/each}}
@@ -30,12 +31,17 @@
 </template>
 
 <template name="week">
-  <div class="calendar__week">
+  <div class="calendar__week {{weekClass}}">
     {{#each day in days}}
       <div class="week__day">
         <div class="week__day__header {{monthClass day}}">
           {{day.name}}
         </div>
+        {{#if day.count}}
+          <div class="week__day__content">
+            {{day.count}}
+          </div>
+        {{/if}}
       </div>
     {{/each}}
   </div>

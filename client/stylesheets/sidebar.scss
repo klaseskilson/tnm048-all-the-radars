@@ -45,6 +45,8 @@
 /* calendar style */
 .calendar__week {
   display: flex;
+  line-height: 1;
+  text-align: center;
 
   & + & {
     border-top: 1px solid #999;
@@ -53,19 +55,22 @@
 
 .week__day {
   width: (100% / 7);
-  box-sizing: border-box;
 
+  box-sizing: border-box;
   & + & {
     border-left: 1px solid #999;
   }
 
 }
 
-.week__day__header {
-  font-size: .8rem;
-  line-height: 1;
-  text-align: center;
+.week__day__content {
   padding: ($padding / 5);
+}
+
+.week__day__header {
+  font-size: .7rem;
+  padding: ($padding / 5);
+  background: rgba(#000, .03);
 
   &--gray {
     color: #999;
