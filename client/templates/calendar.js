@@ -51,6 +51,8 @@ Template.calendar.helpers({
     let offset = firstMarch.day();
     let firstDay = moment(firstMarch).subtract(offset, 'days');
 
+    let counts = [];
+
     // change from array of numbers to array of objects
     return weeksNumbers.map((week) => {
       let weekNumber = week;
@@ -62,6 +64,8 @@ Template.calendar.helpers({
         let isMarch = day.month() === 2;
         let dayData = taxiData[day.format(format)];
         let count = dayData && getUniqueBookings(dayData);
+
+        counts.push(count);
 
         return {
           day,
@@ -75,6 +79,7 @@ Template.calendar.helpers({
       return {
         days,
         weekNumber,
+        counts,
       };
     });
   },
@@ -83,7 +88,16 @@ Template.calendar.helpers({
 Template.week.helpers({
   monthClass (day) {
     return !day.isMarch && 'week__day__header--gray';
-  }
+  },
+
+  dayColor (day) {
+    this.max = this.max || _.max(this.counts);
+    let count = day.count || 0;
+
+    return {
+      style: `background: rgba(253, 141, 60, ${count / this.max});`,
+    };
+  },
 });
 
 let getUniqueBookings = (entries) => {
