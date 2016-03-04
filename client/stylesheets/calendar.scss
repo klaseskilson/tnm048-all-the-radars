@@ -18,12 +18,27 @@ $border-color: #999;
 
 .week__day {
   width: (100% / 7);
-
   box-sizing: border-box;
+
   & + & {
     border-left: 1px solid $border-color;
   }
 
+  &:not(.week__day--active):not(.week__day--fake) {
+    cursor: pointer;
+
+    &:hover {
+      background: lighten($blue, 20%);
+    }
+  }
+}
+
+.week__day--active {
+  background: $blue;
+}
+
+.week__day--active .week__day__header {
+  font-weight: 700;
 }
 
 .week__day__count {

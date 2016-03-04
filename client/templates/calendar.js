@@ -1,3 +1,17 @@
+let getUniqueBookings = (entries) => {
+  let count = 0;
+
+  _.reduce(entries, (old, entry) => {
+    if (entry.hired !== old) {
+      if (entry.hired) ++count;
+      return entry.hired;
+    }
+    return old;
+  }, null);
+
+  return count;
+};
+
 Template.calendar.onCreated(function () {
   let template = this;
   template.taxiId = new ReactiveVar(0);
@@ -9,24 +23,11 @@ Template.calendar.onCreated(function () {
     template.taxiId.set(params);
     template.subscribe(subscription, params);
   });
+
+  Session.setDefault('activeDay', '1 / 3');
 });
 
 Template.calendar.helpers({
-  fakeWeek() {
-    return {
-      days: [
-        { name: 'mon', },
-        { name: 'tue', },
-        { name: 'wed', },
-        { name: 'thu', },
-        { name: 'fri', },
-        { name: 'sat', },
-        { name: 'sun', },
-      ],
-      weekClass: 'calendar__week--fake'
-    };
-  },
-
   weeks () {
     const format = 'M_D';
     let taxiId = Template.instance().taxiId.get();
@@ -86,30 +87,27 @@ Template.calendar.helpers({
 });
 
 Template.week.helpers({
-  monthClass (day) {
-    return !day.isMarch && 'week__day__header--gray';
+  monthClass () {
+    return !this.isMarch && 'week__day__header--gray';
   },
 
-  dayColor (day) {
-    this.max = this.max || _.max(this.counts);
-    let count = day.count || 0;
+  dayColor () {
+    let data = Template.parentData();
+    data.max = data.max || _.max(data.counts);
+    let count = this.count || 0;
 
     return {
-      style: `background: rgba(253, 141, 60, ${count / this.max});`,
+      style: `background: rgba(253, 141, 60, ${count / data.max});`,
     };
+  },
+
+  isActive () {
+    return Session.equals('activeDay', this.name) ? 'week__day--active' : '';
   },
 });
 
-let getUniqueBookings = (entries) => {
-  let count = 0;
-
-  _.reduce(entries, (old, entry) => {
-    if (entry.hired !== old) {
-      if (entry.hired) ++count;
-      return entry.hired;
-    }
-    return old;
-  }, null);
-
-  return count;
-};
+Template.week.events({
+  'click .js-click-day' (event, intance) {
+    Session.set('activeDay', this.name);
+  }
+});

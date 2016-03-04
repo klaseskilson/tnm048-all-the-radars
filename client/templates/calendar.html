@@ -9,7 +9,29 @@
 
     {{#if Template.subscriptionsReady}}
       <div class="sidebar__body__calendar">
-        {{> week fakeWeek}}
+        <div class="calendar__week">
+          <div class="week__day week__day--fake">
+            <div class="week__day__header">mon</div>
+          </div>
+          <div class="week__day week__day--fake">
+            <div class="week__day__header">tue</div>
+          </div>
+          <div class="week__day week__day--fake">
+            <div class="week__day__header">wed</div>
+          </div>
+          <div class="week__day week__day--fake">
+            <div class="week__day__header">thu</div>
+          </div>
+          <div class="week__day week__day--fake">
+            <div class="week__day__header">fri</div>
+          </div>
+          <div class="week__day week__day--fake">
+            <div class="week__day__header">sat</div>
+          </div>
+          <div class="week__day week__day--fake">
+            <div class="week__day__header">sun</div>
+          </div>
+        </div>
         {{#each w in weeks}}
           {{> week w}}
         {{/each}}
@@ -20,14 +42,14 @@
 
 <template name="week">
   <div class="calendar__week {{weekClass}}">
-    {{#each day in days}}
-      <div class="week__day">
-        <div class="week__day__header {{monthClass day}}">
-          {{day.name}}
+    {{#each days}}
+      <div class="week__day js-click-day {{isActive}}">
+        <div class="week__day__header {{monthClass}}">
+          {{name}}
         </div>
-        {{#if day.count}}
-          <div class="week__day__count" {{dayColor day}}>
-            {{day.count}}
+        {{#if count}}
+          <div class="week__day__count" {{dayColor}}>
+            {{count}}
           </div>
         {{/if}}
       </div>
