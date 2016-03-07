@@ -44,7 +44,7 @@ GMap.prototype.addData = function(data) {
 
       marker.append("circle")
         .attr("r", radius)
-        .on('click', select)
+        .on('click', self.select)
         .style('stroke-width', stroke)
         .attr("cx", radius + stroke)
         .attr("cy", radius + stroke)
@@ -62,10 +62,6 @@ GMap.prototype.addData = function(data) {
         return d3.select(elem)
             .style("left", (d.x) + "px")
             .style("top", (d.y) + "px");
-      }
-      function select (d) {
-        let elem = this;
-        self.select(d, elem);
       }
     };
   };
