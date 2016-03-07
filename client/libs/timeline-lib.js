@@ -111,7 +111,6 @@ Timeline.prototype.drawTimeline = function(data) {
 
     var startMin = new Date();
     startMin.setTime(millisec);
-    startMin = closestMinute(startMin);
     startMin.setSeconds(0);
     startMin.setMilliseconds(0);
 
@@ -119,26 +118,8 @@ Timeline.prototype.drawTimeline = function(data) {
     endMin.setSeconds(59);
     endMin.setMilliseconds(999);
 
-    var dataContext = Session.get('dataContext');
-    dataContext.params = [startMin, endMin];
-    Session.set('dataContext', dataContext);
+    var dataContext = Session.get('mapDataContext');
+    dataContext.range = [startMin, endMin];
+    Session.set('mapDataContext', dataContext);
   };
-
-  function closestMinute(testDate) {
-    var bestDate = data[0].date;
-    var bestDiff = Infinity;
-    var currDiff = 0;
-
-    for(var i = 0; i < data.length; ++i) {
-      currDiff = Math.abs(data[i].date - testDate);
-      if(currDiff < bestDiff){
-        bestDate = data[i].date;
-        bestDiff = currDiff;
-      } 
-      else {
-        break;
-      }
-    }
-    return bestDate;
-  }
 };

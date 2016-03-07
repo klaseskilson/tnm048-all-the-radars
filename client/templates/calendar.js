@@ -14,14 +14,10 @@ let getUniqueBookings = (entries) => {
 
 Template.calendar.onCreated(function () {
   let template = this;
-  template.taxiId = new ReactiveVar(0);
   template.autorun(function () {
-    let { subscription, params } = Session.get('dataContext');
-
-    if (subscription !== 'getTaxisById') return;
-
-    template.taxiId.set(params);
-    template.subscribe(subscription, params);
+    Tracker.afterFlush(() => {
+      template.subscribe('getTaxisById', Session.get('selectedTaxiId'));
+    });
   });
 
   Session.setDefault('activeDay', '1 / 3');
@@ -30,7 +26,7 @@ Template.calendar.onCreated(function () {
 Template.calendar.helpers({
   weeks () {
     const format = 'M_D';
-    let taxiId = Template.instance().taxiId.get();
+    let taxiId = Session.get('selectedTaxiId');
     let taxiData = {};
 
     TaxisCollection.find({

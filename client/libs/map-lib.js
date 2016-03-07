@@ -49,10 +49,10 @@ GMap.prototype.addData = function(data) {
         .attr("cx", radius + stroke)
         .attr("cy", radius + stroke)
         .style("fill", function(d) {
-          return d.hired ? "green" : "red";
+          return d.hired ? "red" : "green";
         })
         .style("stroke", function(d) {
-          return d.hired ? "darkgreen" : "darkred";
+          return d.hired ? "darkred" : "darkgreen";
         });
 
       function transform (d) {
@@ -81,18 +81,15 @@ GMap.prototype.addData = function(data) {
 };
 
 GMap.prototype.select = function (datum) {
-  let newContext = {
-    subscription: 'getTaxisById',
-    params: datum.taxiId,
+  let old = Session.get('mapDataContext');
+  let startDate = moment(old.range[0]).set({ 'hour': 0, 'minute': 0, 'second': 0, });
+  let newContext = _.extend(old, {
+    range: [startDate.toDate(), moment(startDate).add(1, 'day').toDate()],
     query: {
       taxiId: datum.taxiId
     },
-  };
+  });
 
-  // check if user attempts to set same context as the current
-  if (Session.get('dataContext') === newContext) {
-    return;
-  }
-
-  Session.set('dataContext', newContext);
+  Session.set('selectedTaxiId', datum.taxiId);
+  Session.set('mapDataContext', newContext);
 };

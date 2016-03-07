@@ -13,9 +13,9 @@ Template.timeLine.onCreated(function () {
         let firstDate = timelineData[0].date,
             secondDate = new Date(firstDate);
         secondDate.setMinutes(secondDate.getMinutes() + 1);
-        Session.set('dataContext', {
-          subscription: 'getTaxisByDate',
-          params: [firstDate, secondDate],
+        Session.setDefault('mapDataContext', {
+          subscription: 'getTaxis',
+          range: [firstDate, secondDate],
           query: {},
         })
       });
