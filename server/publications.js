@@ -36,10 +36,29 @@ Meteor.publish('getTaxisById', (id) => {
  * get the timeline
  * @return {Cursor}       - mongo cursor
  */
-Meteor.publish('getTimeline', () => {
+Meteor.publish('getHourTimeline', () => {
   return TimelineCollection.find({
-    resolution: 'tenMinute'
+    resolution: 'hour'
   }, {
+    sort: {
+      date: 1
+    }
+  });
+});
+
+/**
+ * get the timeline
+ * @return {Cursor}       - mongo cursor
+ */
+Meteor.publish('getMinuteTimeline', (range) => {
+  return TimelineCollection.find({
+    resolution: 'minute',
+    date: {
+      $gte: range[0],
+      $lte: range[1]
+    }
+  }, 
+  {
     sort: {
       date: 1
     }

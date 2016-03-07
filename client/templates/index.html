@@ -16,6 +16,9 @@
 
 <template name="app">
   {{> map}}
-  {{> timeLine}}
+  <div id="timelineParent">
+    {{> hourTimeLine}}
+    {{> minTimeLine}}
+  </div>
   {{> sidebar}}
 </template>

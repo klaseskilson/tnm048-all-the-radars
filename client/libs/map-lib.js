@@ -49,10 +49,10 @@ GMap.prototype.addData = function(data) {
         .attr("cx", radius + stroke)
         .attr("cy", radius + stroke)
         .style("fill", function(d) {
-          return d.hired ? "green" : "red";
+          return d.hired ? "red" : "green";
         })
         .style("stroke", function(d) {
-          return d.hired ? "darkgreen" : "darkred";
+          return d.hired ? "darkred" : "darkgreen";
         });
 
       function transform (d) {
