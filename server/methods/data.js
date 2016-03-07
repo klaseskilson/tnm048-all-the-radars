@@ -136,7 +136,7 @@ Meteor.methods({
         if (!entries[key]) {
           entries[key] = {
             count: 0,
-            date: timestamp,
+            date: new Date(timestamp.getTime()),
             resolution: resolution,
           };
         }
