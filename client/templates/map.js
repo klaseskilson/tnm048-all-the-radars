@@ -16,6 +16,12 @@ Template.map.onCreated(function () {
 
     let { subscription, range, query } = mapDataContext;
     this.subs = this.subscribe(subscription, range, query, () => {
+      query = _.defaults(query, {
+        date: {
+          $gte: range[0],
+          $lte: range[1]
+        }
+      });
       // this after flush thingy ensures the template is re-rendered (if needed)
       Tracker.afterFlush(() => {
         theMap.addData(TaxisCollection.find(query).fetch());
