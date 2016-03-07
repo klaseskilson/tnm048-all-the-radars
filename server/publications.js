@@ -1,16 +1,20 @@
 /**
  * get taxi data by date
- * @param  {Date}   from  - the start of the range
- * @param  {Date}   to    - the end of the range
- * @return {Cursor}       - mongo cursor
+ * @param  {Array[Date, Date]}   range - date range to collect data in
+ * @param  {Object}              query - (optional) allows you to specify more specific queries
+ * @return {Cursor}                    - mongo cursor
  */
-Meteor.publish('getTaxisByDate', (range) => {
-  return TaxisCollection.find({
-    date: {
-      $gte: range[0],
-      $lte: range[1]
-    }
-  }, {
+Meteor.publish('getTaxis', (range, query) => {
+  query = query || {};
+  if (range) {
+    query = _.extend(query, {
+      date: {
+        $gte: range[0],
+        $lte: range[1]
+      }
+    });
+  }
+  return TaxisCollection.find(query, {
     sort: {
       date: 1
     }

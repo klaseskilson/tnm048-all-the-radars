@@ -14,14 +14,10 @@ let getUniqueBookings = (entries) => {
 
 Template.calendar.onCreated(function () {
   let template = this;
-  template.taxiId = new ReactiveVar(0);
   template.autorun(function () {
-    let { subscription, params } = Session.get('dataContext');
-
-    if (subscription !== 'getTaxisById') return;
-
-    template.taxiId.set(params);
-    template.subscribe(subscription, params);
+    Tracker.afterFlush(() => {
+      template.subscribe('getTaxisById', Session.get('selectedTaxiId'));
+    });
   });
 
   Session.setDefault('activeDay', '1 / 3');
@@ -30,7 +26,7 @@ Template.calendar.onCreated(function () {
 Template.calendar.helpers({
   weeks () {
     const format = 'M_D';
-    let taxiId = Template.instance().taxiId.get();
+    let taxiId = Session.get('selectedTaxiId');
     let taxiData = {};
 
     TaxisCollection.find({
@@ -102,12 +98,20 @@ Template.week.helpers({
   },
 
   isActive () {
-    return Session.equals('activeDay', this.name) ? 'week__day--active' : '';
+    let range = Session.get('mapDataContext').range;
+    return this.day.isSame(range[0], 'day') ? 'week__day--active' : '';
   },
 });
 
 Template.week.events({
   'click .js-click-day' (event, intance) {
-    Session.set('activeDay', this.name);
+    let old = Session.get('mapDataContext');
+    let newContext = _.extend(old, {
+      range: [
+        this.day.toDate(),
+        moment(this.day).add(1, 'day').toDate()
+      ]
+    });
+    Session.set('mapDataContext', newContext);
   }
 });

@@ -44,7 +44,7 @@ GMap.prototype.addData = function(data) {
 
       marker.append("circle")
         .attr("r", radius)
-        .on('click', select)
+        .on('click', self.select)
         .style('stroke-width', stroke)
         .attr("cx", radius + stroke)
         .attr("cy", radius + stroke)
@@ -63,10 +63,6 @@ GMap.prototype.addData = function(data) {
             .style("left", (d.x) + "px")
             .style("top", (d.y) + "px");
       }
-      function select (d) {
-        let elem = this;
-        self.select(d, elem);
-      }
     };
   };
 
@@ -81,18 +77,15 @@ GMap.prototype.addData = function(data) {
 };
 
 GMap.prototype.select = function (datum) {
-  let newContext = {
-    subscription: 'getTaxisById',
-    params: datum.taxiId,
+  let old = Session.get('mapDataContext');
+  let startDate = moment(old.range[0]).set({ 'hour': 0, 'minute': 0, 'second': 0, });
+  let newContext = _.extend(old, {
+    range: [startDate.toDate(), moment(startDate).add(1, 'day').toDate()],
     query: {
       taxiId: datum.taxiId
     },
-  };
+  });
 
-  // check if user attempts to set same context as the current
-  if (Session.get('dataContext') === newContext) {
-    return;
-  }
-
-  Session.set('dataContext', newContext);
+  Session.set('selectedTaxiId', datum.taxiId);
+  Session.set('mapDataContext', newContext);
 };

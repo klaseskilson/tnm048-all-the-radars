@@ -134,9 +134,9 @@ hourTimeline.prototype.drawTimeline = function(data) {
     selectedHour.query = {resolution: 'minute'};
     Session.set('selectedHour', selectedHour);
 
-    var taxiData = Session.get('dataContext');
-    taxiData.params = [startHour, endMin];
-    Session.set('dataContext', taxiData);
+    var dataContext = Session.get('mapDataContext');
+    dataContext.range = [startHour, endMin];
+    Session.set('mapDataContext', dataContext);
   };
 
   function closestMinute(testDate) {

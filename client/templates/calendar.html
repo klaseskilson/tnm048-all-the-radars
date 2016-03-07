@@ -1,9 +1,10 @@
 <template name="calendar">
   <div class="sidebar__body">
     <h2 class="sidebar__body__title">
-      Unique bookings
       {{#unless Template.subscriptionsReady}}
-        ...
+        Counting bookings...
+      {{else}}
+        Unique bookings
       {{/unless}}
     </h2>
 

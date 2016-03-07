@@ -128,9 +128,9 @@ minTimeline.prototype.drawTimeline = function(data) {
     endMin.setSeconds(59);
     endMin.setMilliseconds(999);
 
-    var taxiData = Session.get('dataContext');
-    taxiData.params = [startMin, endMin];
-    Session.set('dataContext', taxiData);
+    var dataContext = Session.get('mapDataContext');
+    dataContext.range = [startMin, endMin];
+    Session.set('mapDataContext', dataContext);
   };
 
   function closestMinute(testDate) {
