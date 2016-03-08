@@ -69,22 +69,34 @@ hourTimeline.prototype.drawTimeline = function(data) {
       .attr("class", "y axis")
       .call(yAxis);
 
-  context.append('rect')
-      .attr("height", height)
-      .attr("width", 25)
-      .attr("fill", "#2394F5")
-      .attr("opacity", 0.6)
+  var sliderRect = context.append('g')
       .attr("id", "slider")
       .data([sliderPosition])
       .call(drag);
+  sliderRect.append('rect')
+      .attr("height", height)
+      .attr("width", 25)
+      .attr("fill", "#2394F5")
+      .attr("opacity", 0.7);
+      
+
+  sliderRect.append('rect')
+      .attr("height", height)
+      .attr("width", 0.7)
+      .attr("fill", "#000000")
+      .attr("opacity", 1)
+      .attr("transform", "translate(12,0)");
 
   context.on("click", function() {
-    moveSlider(d3.select("#slider")[0][0], ((d3.mouse(this)[0] / 2) - 6));
+    var mouseX = ((d3.mouse(this)[0]) - 12);
+    if (mouseX > -12) {
+      moveSlider(d3.select("#slider")[0][0], mouseX);
+    }
   });
 
   function dragMove(d) {
-    sliderPosition.x += (d3.event.dx / 2);
-    sliderPosition.x = Math.max(-6, Math.min(d.x, (width / 2) - 6));
+    sliderPosition.x += (d3.event.dx);
+    sliderPosition.x = Math.max(-12, Math.min(d.x, (width) - 12));
     d3.select(this)
       .attr('x', sliderPosition.x)
       .attr("transform", "translate(" + sliderPosition.x + "," + sliderPosition.y + ")")
@@ -93,7 +105,7 @@ hourTimeline.prototype.drawTimeline = function(data) {
 
   function dragEnd(d) {
     d3.select(this)
-      .attr('opacity', 0.6);
+      .attr('opacity', 0.7);
     chooseHour(d.x);
   };
 
@@ -105,7 +117,7 @@ hourTimeline.prototype.drawTimeline = function(data) {
   };
 
   function chooseHour(x) {
-    var pos = (x + 6) / (width / 2);
+    var pos = (x + 12) / (width);
     var limits = d3.extent(data.map(function(d) { return d.date; }));
     var millisec = Math.round(limits[0].getTime() + pos * (limits[1].getTime() - (limits[0].getTime())));
 

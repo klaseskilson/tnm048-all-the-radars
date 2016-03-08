@@ -73,22 +73,34 @@ minTimeline.prototype.drawTimeline = function(data) {
       .attr("class", "y axis")
       .call(yAxis);
 
-  context.append('rect')
-      .attr("height", height)
-      .attr("width", 25)
-      .attr("fill", "#2394F5")
-      .attr("opacity", 0.6)
+  var sliderRect = context.append('g')
       .attr("id", "sliderMin")
       .data([sliderMinPosition])
       .call(drag);
+  sliderRect.append('rect')
+      .attr("height", height)
+      .attr("width", 25)
+      .attr("fill", "#2394F5")
+      .attr("opacity", 0.7);
+      
+
+  sliderRect.append('rect')
+      .attr("height", height)
+      .attr("width", 0.7)
+      .attr("fill", "#000000")
+      .attr("opacity", 1)
+      .attr("transform", "translate(12,0)");
 
   context.on("click", function() {
-    moveSliderMin(d3.select("#sliderMin")[0][0], ((d3.mouse(this)[0] / 2) - 6));
+    var mouseX = ((d3.mouse(this)[0]) - 12);
+    if (mouseX > -12) {
+      moveSliderMin(d3.select("#sliderMin")[0][0], mouseX);
+    }
   });
 
   function dragMove(d) {
-    sliderMinPosition.x += (d3.event.dx / 2);
-    sliderMinPosition.x = Math.max(-6, Math.min(d.x, (width / 2) - 6));
+    sliderMinPosition.x += (d3.event.dx);
+    sliderMinPosition.x = Math.max(-12, Math.min(d.x, (width) - 12));
     d3.select(this)
       .attr('x', sliderMinPosition.x)
       .attr("transform", "translate(" + sliderMinPosition.x + "," + sliderMinPosition.y + ")")
@@ -97,7 +109,7 @@ minTimeline.prototype.drawTimeline = function(data) {
 
   function dragEnd(d) {
     d3.select(this)
-      .attr('opacity', 0.6);
+      .attr('opacity', 0.7);
     chooseMin(d.x);
   };
 
@@ -109,7 +121,7 @@ minTimeline.prototype.drawTimeline = function(data) {
   };
 
   function chooseMin(x) {
-    var pos = (x + 6) / (width / 2);
+    var pos = (x + 12) / (width);
     var limits = d3.extent(data.map(function(d) { return d.date; }));
     var millisec = Math.round(limits[0].getTime() + pos * (limits[1].getTime() - (limits[0].getTime())));
 
