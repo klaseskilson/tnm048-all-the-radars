@@ -25,3 +25,12 @@ Template.minTimeLine.onCreated(function () {
     });
   });
 });
+
+Template.minTimeLine.helpers({
+  selectedHour () {
+    const { range } = Session.get('selectedHour') || {};
+    let from = moment(range[0]).format('MMMM Do, HH:mm'),
+        to = moment(range[1]).format('HH:mm');
+    return `${from} - ${to}`;
+  }
+});

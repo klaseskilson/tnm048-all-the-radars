@@ -36,7 +36,7 @@ hourTimeline.prototype.drawTimeline = function(data) {
 
   //Defines the context area
   var context = svg.append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + margin.left + ", 0)");
 
   //Initializes the axis domains for the chart
   x.domain(d3.extent(data.map(function(d) { return d.date; })));

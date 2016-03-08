@@ -12,7 +12,7 @@ minTimeline.prototype.drawTimeline = function(data) {
       y = d3.scale.linear().range([height, 0]);
 
   //Sets the axis 
-  var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5),
+  var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(6).tickFormat(d3.time.format('%H:%M')),
       yAxis = d3.svg.axis().scale(y).orient("left").ticks([5]);
 
   //Sets the sliderMins position
@@ -30,8 +30,8 @@ minTimeline.prototype.drawTimeline = function(data) {
       });
 
   //Clear old data from the div
-  d3.select("#minTimeLine").html("");
-  d3.select("#minTimeLine").selectAll("*").remove();
+  //d3.select("#minTimeLine").html("");
+  d3.select("#minTimeLine").selectAll("svg").remove();
 
   //Assigns the svg canvas to the area div
   var svg = d3.select("#minTimeLine").append("svg")
@@ -40,7 +40,7 @@ minTimeline.prototype.drawTimeline = function(data) {
 
   //Defines the context area
   var context = svg.append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + margin.left + ", 0)");
 
   //Initializes the axis domains for the chart
   x.domain(d3.extent(data.map(function(d) { return d.date; })));
