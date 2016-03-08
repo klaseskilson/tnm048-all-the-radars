@@ -8,14 +8,8 @@ Template.map.onCreated(function () {
       return;
     }
 
-    // empty client cache if exists
-    if (this.subs && this.oldSubscription !== this.subs.subscriptionId) {
-      this.oldSubscription = this.subs.subscriptionId;
-      this.subs.stop();
-    }
-
-    let { subscription, range, query } = mapDataContext;
-    this.subs = this.subscribe(subscription, range, query, () => {
+    let { range, query } = mapDataContext;
+    this.subscribe('getTaxis', range, query, () => {
       query = _.defaults(query, {
         date: {
           $gte: range[0],
@@ -32,5 +26,4 @@ Template.map.onCreated(function () {
 
 Template.map.onRendered(function createMap() {
   theMap.setup(this.find('#map'));
-
 });

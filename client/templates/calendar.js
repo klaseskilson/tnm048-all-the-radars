@@ -14,13 +14,14 @@ let getUniqueBookings = (entries) => {
 
 Template.calendar.onCreated(function () {
   let template = this;
-  template.autorun(function () {
-    Tracker.afterFlush(() => {
-      template.subscribe('getTaxisById', Session.get('selectedTaxiId'));
-    });
+  template.autorun(() => {
+    this.oldSubs = this.subs || {};
+    this.subs = template.subscribe('getTaxisById', Session.get('selectedTaxiId'));
+    // remove old subs cache
+    if (this.subs !== this.oldSubs && this.oldSubs.subscriptionId) {
+      this.oldSubs.stop();
+    }
   });
-
-  Session.setDefault('activeDay', '1 / 3');
 });
 
 Template.calendar.helpers({

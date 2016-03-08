@@ -69,3 +69,9 @@ svg {
   fill-opacity: .125;
   shape-rendering: crispEdges;
 }
+
+input {
+  width: 100%;
+  padding: ($padding / 3) ($padding / 2);
+  box-sizing: border-box;
+}
