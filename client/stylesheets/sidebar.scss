@@ -65,3 +65,20 @@
 .form__input + .form__input {
   padding-left: ($padding / 2);
 }
+
+.clusters__entry {
+  padding: ($padding / 2);
+  font-size: .9rem;
+
+  & + & {
+    border-top: 1px solid #e3e3e3;
+  }
+
+  &:hover {
+    background: #e3e3e3;
+  }
+}
+
+.entry__title .fa {
+  color: #444;
+}

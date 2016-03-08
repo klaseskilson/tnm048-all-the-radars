@@ -8,6 +8,7 @@ Template.clusterbar.helpers({
 
 Template.clusterForm.onCreated(function () {
   this.clustering = new ReactiveVar(false);
+  this.clusters = new ReactiveVar([]);
 });
 
 Template.clusterForm.onDestroyed(function () {
@@ -20,6 +21,10 @@ Template.clusterForm.helpers({
   loading () {
     return Template.instance().clustering.get();
   },
+
+  clusters () {
+    return Template.instance().clusters.get();
+  },
 });
 
 Template.clusterForm.events({
@@ -29,12 +34,11 @@ Template.clusterForm.events({
     const radius = parseFloat(event.currentTarget.radius.value);
 
     // start loading indicator
-    const clustering = Template.instance().clustering;
-    clustering.set(true);
+    const instance = Template.instance();
+    instance.clustering.set(true);
 
     // subscribe to data and wait for it
     const { range } = Session.get('selectedHour');
-    const instance = Template.instance();
     instance.subs = Meteor.subscribe('getTaxis', range, () => {
       const { range } = Session.get('selectedHour');
       const data = TaxisCollection.find({
@@ -49,19 +53,35 @@ Template.clusterForm.events({
         },
       }).fetch();
       cluster(data, cars, radius).then((clusters) => {
-        // send clusters to map
+        // send clusters to map and list
         window.theMap.addClusters(clusters, cars);
+        instance.clusters.set(clusters);
         // stop loading indicator
-        clustering.set(false);
+        instance.clustering.set(false);
         // remove cached data!
         instance.subs.stop();
       }, (error) => {
-        clustering.set(false);
+        instance.clustering.set(false);
         // remove cached data!
         instance.subs.stop();
       });
     });
   }
+});
+
+Template.clusterList.helpers({
+  hasClusters () {
+    return this.clusters.length > 0;
+  },
+
+  position () {
+    const precision = 6;
+    return `${this.x_coord.toPrecision(precision)}, ${this.y_coord.toPrecision(precision)}`
+  },
+
+  count () {
+    return this.drivers.length;
+  },
 });
 
 function cluster (data, cars, radius) {
