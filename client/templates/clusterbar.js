@@ -49,13 +49,11 @@ Template.clusterForm.events({
         },
       }).fetch();
       cluster(data, cars, radius).then((data) => {
-        console.log('DONE!', data);
         // stop loading indicator
         clustering.set(false);
         // remove cached data!
         instance.subs.stop();
       }, (error) => {
-        console.log('ERROR!', error);
         clustering.set(false);
         // remove cached data!
         instance.subs.stop();
@@ -70,10 +68,6 @@ function cluster (data, cars, radius) {
       reject(cars);
       return;
     }
-    // cluster here!
-    //////////////////////////////////////
-    //  X = LONGITUD       Y = LATITUD  //
-    //////////////////////////////////////
     var pickUpPoint = [];
     var clusters = [];
     _.reduce(data, (old, entry) => {
@@ -110,15 +104,17 @@ function cluster (data, cars, radius) {
     }
 
     //Remove unwanted clusters
-    _.filter(clusters, function (cluster) {
-      if(cluster.drivers.length >= cars) { return cluster; }
+    clusters = _.filter(clusters, function (cluster) { 
+      return cluster.drivers && cluster.drivers.length >= cars;
     });
-    //Check if clusters are too close to each other and remove one
     var clusterDistance = 0;
     for (var i = 0; i < clusters.length; i++) {
       for (var j = 0; j < clusters.length; j++) {
+        if(i === j) {
+          continue;
+        } 
         clusterDistance = longLatDistance(clusters[j].x_coord, clusters[j].y_coord, clusters[i].x_coord, clusters[i].y_coord);
-        if (clusterDistance <= radius) {
+        if (clusterDistance <= radius * 2) {
           if (clusters[i].drivers.length < clusters[j].drivers.length) {
             clusters.splice(i, 1);
             i--;
@@ -131,6 +127,7 @@ function cluster (data, cars, radius) {
         }
       }
     }
+
 
     var sumOfOldCoords = 0,
         sumOfCoords = 0;
@@ -166,7 +163,6 @@ function cluster (data, cars, radius) {
         }
       }
     } while (sumOfCoords != sumOfOldCoords)
-    console.log(clusters);
     resolve(clusters);
   });
 }
