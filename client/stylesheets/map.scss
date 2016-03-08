@@ -23,7 +23,11 @@
 
 .clusters circle {
   fill: rgba($blue, .7);
-  stroke: $blue;
+  stroke: red;
   stroke-width: 2px;
   cursor: pointer;
+
+  &:hover {
+    fill: rgba($blue, .3);
+  }
 }

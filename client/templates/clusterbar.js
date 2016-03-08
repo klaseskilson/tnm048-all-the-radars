@@ -50,7 +50,7 @@ Template.clusterForm.events({
       }).fetch();
       cluster(data, cars, radius).then((clusters) => {
         // send clusters to map
-        window.theMap.addClusters(clusters);
+        window.theMap.addClusters(clusters, cars);
         // stop loading indicator
         clustering.set(false);
         // remove cached data!

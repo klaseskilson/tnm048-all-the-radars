@@ -86,7 +86,7 @@ GMap.prototype.select = function (datum) {
   Session.set('mapDataContext', newContext);
 };
 
-GMap.prototype.addClusters = function (clusterData) {
+GMap.prototype.addClusters = function (clusterData, minLength) {
   let self = this;
   // prepare new overlay
   self.clusterOverlay = self.clusterOverlay || new google.maps.OverlayView();
@@ -97,28 +97,27 @@ GMap.prototype.addClusters = function (clusterData) {
 
     self.clusterOverlay.draw = function () {
       const projection = this.getProjection();
-      const base = 48;
-      const dimension = c => `${base}px`;
+      const base = 24,
+            strokeWidth = 2;
+      const dimension = c => base + (c.drivers.length - minLength) + 2 * strokeWidth;
       const clusters = self.clusterLayer.selectAll('svg')
         .each(transform)
         .data(clusterData)
         .enter().append('svg')
         .each(transform)
         .attr('class', 'cluster')
-        .style('height', dimension)
-        .style('width', dimension);
+        .style('height', c => `${dimension(c)}px`)
+        .style('width', c => `${dimension(c)}px`);
 
       clusters.append('circle')
-        .attr('r', `${base / 2}px`)
-        .attr("cx", `${base / 2}px`)
-        .attr("cy", `${base / 2}px`);
+        .attr('r', c => `${dimension(c) / 2 - 2 * strokeWidth}px`)
+        .attr("cx", c => `${dimension(c) / 2 - 2 * strokeWidth}px`)
+        .attr("cy", c => `${dimension(c) / 2 - 2 * strokeWidth}px`);
 
       function transform (cluster) {
-        console.log('ah', cluster);
         let elem = this;
-        cluster = new google.maps.LatLng(cluster.y, cluster.x);
+        cluster = new google.maps.LatLng(cluster.y_coord, cluster.x_coord);
         cluster = projection.fromLatLngToDivPixel(cluster);
-        console.log('oh', cluster);
         return d3.select(elem)
           .style("left", cluster.x + "px")
           .style("top", cluster.y + "px");
