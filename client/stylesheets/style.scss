@@ -46,14 +46,24 @@ svg {
   font: 10px sans-serif;
 }
 
-#timeLine {
+#timelineParent {
+  display: flex;
   position: fixed;
-  bottom: 0;
   width: 100%;
-  height: $timelineHeight;
-  background: $background;
+  bottom: 0;
   left: 0;
+  background: $background;
+  height: $timelineHeight;
   padding: $padding;
+}
+
+#hourTimeLine {
+  width: 70%;
+  box-sizing: border-box;
+}
+
+#minTimeLine {
+  width: 30%;
   box-sizing: border-box;
 }
 

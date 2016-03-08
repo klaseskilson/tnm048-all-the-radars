@@ -1,9 +1,9 @@
-Timeline = function () {};
+minTimeline = function () {};
 
-Timeline.prototype.drawTimeline = function(data) {
-  var areaDiv = $("#timeLine");
+minTimeline.prototype.drawTimeline = function(data) {
+  var areaDiv = $("#minTimeLine");
 
-  var margin = { top: 15, right: 15, bottom: 20, left: 40 },
+  var margin = { top: 15, right: 35, bottom: 20, left: 25 },
       width = areaDiv.width() - margin.left - margin.right,
       height = areaDiv.height() - margin.top - margin.bottom;
 
@@ -12,11 +12,11 @@ Timeline.prototype.drawTimeline = function(data) {
       y = d3.scale.linear().range([height, 0]);
 
   //Sets the axis 
-  var xAxis = d3.svg.axis().scale(x).orient("bottom"),
+  var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5),
       yAxis = d3.svg.axis().scale(y).orient("left").ticks([5]);
 
-  //Sets the sliders position
-  var sliderPosition = {x: 0, y: 0};
+  //Sets the sliderMins position
+  var sliderMinPosition = {x: 0, y: 0};
 
   //Creates the chart
   var area = d3.svg.area()
@@ -29,8 +29,12 @@ Timeline.prototype.drawTimeline = function(data) {
           return y(d.count);
       });
 
+  //Clear old data from the div
+  d3.select("#minTimeLine").html("");
+  d3.select("#minTimeLine").selectAll("*").remove();
+
   //Assigns the svg canvas to the area div
-  var svg = d3.select("#timeLine").append("svg")
+  var svg = d3.select("#minTimeLine").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom);
 
@@ -42,7 +46,7 @@ Timeline.prototype.drawTimeline = function(data) {
   x.domain(d3.extent(data.map(function(d) { return d.date; })));
   y.domain([d3.min(data.map(function(d) { return d.count; })), d3.max(data.map(function(d) { return d.count; }))]);
 
-  //Create drag variable to move the slider
+  //Create drag variable to move the sliderMin
   var drag = d3.behavior.drag()
       .origin(Object)
       .on("drag", dragMove)
@@ -70,47 +74,53 @@ Timeline.prototype.drawTimeline = function(data) {
       .call(yAxis);
 
   context.append('rect')
-      .attr("height", 100)
+      .attr("height", height)
       .attr("width", 25)
       .attr("fill", "#2394F5")
       .attr("opacity", 0.6)
-      .attr("id", "slider")
-      .data([sliderPosition])
+      .attr("id", "sliderMin")
+      .data([sliderMinPosition])
       .call(drag);
 
   context.on("click", function() {
-    moveSlider(d3.select("#slider")[0][0], ((d3.mouse(this)[0] / 2) - 6));
+    moveSliderMin(d3.select("#sliderMin")[0][0], ((d3.mouse(this)[0] / 2) - 6));
   });
 
   function dragMove(d) {
-    sliderPosition.x += (d3.event.dx / 2);
-    sliderPosition.x = Math.max(-6, Math.min(d.x, (width / 2) - 6));
+    sliderMinPosition.x += (d3.event.dx / 2);
+    sliderMinPosition.x = Math.max(-6, Math.min(d.x, (width / 2) - 6));
     d3.select(this)
-      .attr('x', sliderPosition.x)
-      .attr("transform", "translate(" + sliderPosition.x + "," + sliderPosition.y + ")")
+      .attr('x', sliderMinPosition.x)
+      .attr("transform", "translate(" + sliderMinPosition.x + "," + sliderMinPosition.y + ")")
       .attr("opacity", 0.3);
   };
 
   function dragEnd(d) {
     d3.select(this)
       .attr('opacity', 0.6);
-    chooseMinute(d.x);
+    chooseMin(d.x);
   };
 
-  function moveSlider(d, mouseX) {
+  function moveSliderMin(d, mouseX) {
     d.setAttribute("x", mouseX);
-    sliderPosition.x = mouseX;
+    sliderMinPosition.x = mouseX;
     d.setAttribute("transform", "translate(" + mouseX + ",0)");
-    chooseMinute(mouseX);
+    chooseMin(mouseX);
   };
 
-  function chooseMinute(x) {
+  function chooseMin(x) {
     var pos = (x + 6) / (width / 2);
     var limits = d3.extent(data.map(function(d) { return d.date; }));
     var millisec = Math.round(limits[0].getTime() + pos * (limits[1].getTime() - (limits[0].getTime())));
 
     var startMin = new Date();
     startMin.setTime(millisec);
+    startMin = closestMinute(startMin);
+    setMinute(startMin);
+  };
+
+
+  function setMinute(startMin) {
     startMin.setSeconds(0);
     startMin.setMilliseconds(0);
 
@@ -122,4 +132,19 @@ Timeline.prototype.drawTimeline = function(data) {
     dataContext.range = [startMin, endMin];
     Session.set('mapDataContext', dataContext);
   };
+
+  function closestMinute(testDate) {
+    var bestDate = data[0].date;
+    var bestDiff = Infinity;
+    var currDiff = 0;
+
+    for(var i = 0; i < data.length; ++i) {
+      currDiff = Math.abs(data[i].date - testDate);
+      if(currDiff < bestDiff){
+        bestDate = data[i].date;
+        bestDiff = currDiff;
+      }
+    }
+    return bestDate;
+  }
 };
