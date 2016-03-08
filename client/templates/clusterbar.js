@@ -34,7 +34,8 @@ Template.clusterForm.events({
 
     // subscribe to data and wait for it
     const { range } = Session.get('selectedHour');
-    Template.instance().subs = Meteor.subscribe('getTaxis', range, () => {
+    const instance = Template.instance();
+    instance.subs = Meteor.subscribe('getTaxis', range, () => {
       const { range } = Session.get('selectedHour');
       const data = TaxisCollection.find({
         date: {
@@ -52,10 +53,12 @@ Template.clusterForm.events({
         // stop loading indicator
         clustering.set(false);
         // remove cached data!
-        Template.instance().subs.stop();
+        instance.subs.stop();
       }, (error) => {
         console.log('ERROR!', error);
         clustering.set(false);
+        // remove cached data!
+        instance.subs.stop();
       });
     });
   }
