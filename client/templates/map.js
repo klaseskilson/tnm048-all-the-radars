@@ -1,4 +1,4 @@
-var theMap = new GMap();
+window.theMap = new GMap();
 
 Template.map.onCreated(function () {
   this.autorun(() => {
@@ -18,12 +18,13 @@ Template.map.onCreated(function () {
       });
       // this after flush thingy ensures the template is re-rendered (if needed)
       Tracker.afterFlush(() => {
-        theMap.addData(TaxisCollection.find(query).fetch());
+        window.theMap.addData(TaxisCollection.find(query).fetch());
       });
     });
   });
 });
 
 Template.map.onRendered(function createMap() {
-  theMap.setup(this.find('#map'));
+
+  window.theMap.setup(this.find('#map'));
 });

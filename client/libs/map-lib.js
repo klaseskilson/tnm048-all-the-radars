@@ -89,3 +89,7 @@ GMap.prototype.select = function (datum) {
   Session.set('selectedTaxiId', datum.taxiId);
   Session.set('mapDataContext', newContext);
 };
+
+GMap.prototype.addCluster = function (data) {
+
+};

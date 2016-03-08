@@ -1,6 +1,6 @@
 @import 'variables';
 
-#sidebar {
+.sidebar {
   position: fixed;
   top: 0;
   width: $sidebarWidth;
@@ -11,11 +11,11 @@
   background: $background;
 }
 
-#sidebar.sidebar--hidden {
+.sidebar.sidebar--hidden {
   right: - $sidebarWidth;
 }
 
-#sidebar p {
+.sidebar p {
   padding: 0 ($padding / 2);
 }
 
