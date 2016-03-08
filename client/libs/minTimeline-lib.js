@@ -3,7 +3,7 @@ minTimeline = function () {};
 minTimeline.prototype.drawTimeline = function(data) {
   var areaDiv = $("#minTimeLine");
 
-  var margin = { top: 15, right: 35, bottom: 20, left: 25 },
+  var margin = { top: 15, right: 35, bottom: 20, left: 30 },
       width = areaDiv.width() - margin.left - margin.right,
       height = areaDiv.height() - margin.top - margin.bottom;
 
@@ -128,8 +128,11 @@ minTimeline.prototype.drawTimeline = function(data) {
     endMin.setSeconds(59);
     endMin.setMilliseconds(999);
 
+    Session.set('selectedTaxiId', null);
+
     var dataContext = Session.get('mapDataContext');
     dataContext.range = [startMin, endMin];
+    dataContext.query = {};
     Session.set('mapDataContext', dataContext);
   };
 

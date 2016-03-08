@@ -15,8 +15,7 @@ Template.hourTimeLine.onCreated(function () {
         lastMin.setHours(lastMin.getHours() + 1);
         Session.set('selectedHour', {
           subscription: 'getMinuteTimeline',
-          params: [firstMin, lastMin],
-          query: {resolution: 'minute'},
+          range: [firstMin, lastMin],
         });
 
         let firstDate = timelineData[0].date,

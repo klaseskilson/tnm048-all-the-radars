@@ -129,13 +129,15 @@ hourTimeline.prototype.drawTimeline = function(data) {
     endMin.setSeconds(59);
     endMin.setMilliseconds(999);
 
+    Session.set('selectedTaxiId', null);
+
     var selectedHour = Session.get('selectedHour');
-    selectedHour.params = [startHour, endHour];
-    selectedHour.query = {resolution: 'minute'};
+    selectedHour.range = [startHour, endHour];
     Session.set('selectedHour', selectedHour);
 
     var dataContext = Session.get('mapDataContext');
     dataContext.range = [startHour, endMin];
+    dataContext.query = {};
     Session.set('mapDataContext', dataContext);
   };
 
