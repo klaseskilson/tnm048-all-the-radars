@@ -47,6 +47,10 @@ button {
     background: darken($blue, 10%);
     border-color: darken($blue, 30%);
   }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 }
 
 label {

@@ -2,7 +2,7 @@
   <section class="sidebar {{hideSidebar 'sidebar--hidden'}}">
     <div class="sidebar__header">
       <div class="sidebar__header__title">
-        Cluster information
+        Pickup points
       </div>
     </div>
     {{#unless hideSidebar}}
@@ -14,13 +14,13 @@
 <template name="clusterForm">
   <div class="sidebar__body">
     <h2 class="sidebar__body__title">
-      Find common pickup spots
+      Find common pickup points
     </h2>
 
     <form class="sidebar__form js-cluster-form">
       <div class="form__row">
         <label class="form__input">
-          Spot radius (km)
+          Max. radius (km)
           <input type="number" min="0.1" step="0.1" placeholder="Distance" value="1.5" name="radius">
         </label>
         <label class="form__input">
@@ -30,12 +30,14 @@
       </div>
       <div class="form__row">
         <button disabled="{{loading}}">
-          Find spots!
+          {{#if loading}}
+            {{icon 'circle-o-notch fa-spin'}}
+            Finding points...
+          {{else}}
+            Find points
+          {{/if}}
         </button>
       </div>
     </form>
-    {{#if loading}}
-      loading
-    {{/if}}
   </div>
 </template>
