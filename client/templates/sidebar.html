@@ -2,19 +2,30 @@
   <section id="sidebar" class="{{hideSidebar 'sidebar--hidden'}}">
     <div class="sidebar__header">
       <div class="sidebar__header__title">
-        Driver information
+        Driver {{driver}}
       </div>
       <div class="sidebar__header__exit js-exit-taxi">&times;</div>
     </div>
     {{#unless hideSidebar}}
-      {{> info}}
       {{> calendar}}
+      {{> info}}
     {{/unless}}
   </section>
 </template>
 
 <template name="info">
-  <p>
-    A driver is selected.
-  </p>
+  <div class="sidebar__body">
+    <h2 class="sidebar__body__title">
+      Change driver
+    </h2>
+    <p>
+      <input type="number" min="10002" max="11789" step="1"
+             class="js-select-driver" value="{{session 'selectedTaxiId'}}">
+    </p>
+    {{#unless hasData}}
+      <p>
+        No data available for {{session 'selectedTaxiId'}}.
+      </p>
+    {{/unless}}
+  </div>
 </template>

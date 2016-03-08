@@ -22,7 +22,6 @@ Template.hourTimeLine.onCreated(function () {
             secondDate = new Date(firstDate);
         secondDate.setMinutes(secondDate.getMinutes() + 1);
         Session.setDefault('mapDataContext', {
-          subscription: 'getTaxis',
           range: [firstDate, secondDate],
           query: {},
         })
