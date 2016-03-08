@@ -2,7 +2,7 @@ GMap = function () {};
 
 /**
  * create map
- * @param {HTMLNode] node           - the html node to append the map to
+ * @param {HTMLNode] node - the html node to append the map to
  */
 GMap.prototype.setup = function(node) {
   this.map = new google.maps.Map(node, {
@@ -19,19 +19,19 @@ GMap.prototype.addData = function(data) {
   var self = this;
 
   // create overlay if it doesn't exist
-  self.overlay = self.overlay || new google.maps.OverlayView();
+  self.pointsOverlay = self.pointsOverlay || new google.maps.OverlayView();
 
   // called from `setMap`
-  self.overlay.onAdd = function() {
-    self.layer = self.layer || d3.select(this.getPanes().overlayMouseTarget).append("div")
+  self.pointsOverlay.onAdd = function() {
+    self.pointsLayer = self.pointsLayer || d3.select(this.getPanes().overlayMouseTarget).append("div")
       .attr("class", "taxis");
 
-    self.overlay.draw = function() {
+    self.pointsOverlay.draw = function() {
       var projection = this.getProjection(),
         stroke = 1,
         radius = 4;
 
-      var marker = self.layer.selectAll("svg")
+      var marker = self.pointsLayer.selectAll("svg")
         .data(data)
         .each(transform)
         .enter().append("svg")
@@ -48,32 +48,28 @@ GMap.prototype.addData = function(data) {
         .style('stroke-width', stroke)
         .attr("cx", radius + stroke)
         .attr("cy", radius + stroke)
-        .style("fill", function(d) {
-          return d.hired ? "red" : "green";
-        })
-        .style("stroke", function(d) {
-          return d.hired ? "darkred" : "darkgreen";
-        });
+        .style('fill', d => d.hired ? 'red' : 'green')
+        .style('stroke', d => d.hired ? 'darkred' : 'darkgreen');
 
       function transform (d) {
         let elem = this;
         d = new google.maps.LatLng(d.y_coord, d.x_coord);
         d = projection.fromLatLngToDivPixel(d);
         return d3.select(elem)
-            .style("left", (d.x) + "px")
-            .style("top", (d.y) + "px");
+          .style("left", (d.x) + "px")
+          .style("top", (d.y) + "px");
       }
     };
   };
 
   // called when `setMap` is called a second time on an overlay
-  self.overlay.onRemove = function () {
-    if (self.layer) {
-      self.layer.selectAll('.marker').remove();
+  self.pointsOverlay.onRemove = function () {
+    if (self.pointsLayer) {
+      self.pointsLayer.selectAll('.marker').remove();
     }
   };
 
-  self.overlay.setMap(self.map);
+  self.pointsOverlay.setMap(self.map);
 };
 
 GMap.prototype.select = function (datum) {
@@ -90,6 +86,51 @@ GMap.prototype.select = function (datum) {
   Session.set('mapDataContext', newContext);
 };
 
-GMap.prototype.addCluster = function (data) {
+GMap.prototype.addClusters = function (clusterData) {
+  let self = this;
+  // prepare new overlay
+  self.clusterOverlay = self.clusterOverlay || new google.maps.OverlayView();
+  self.clusterOverlay.onAdd = function () {
+    self.clusterLayer = self.clusterLayer || d3.select(this.getPanes().overlayMouseTarget)
+        .append("div")
+        .attr("class", "clusters");
 
+    self.clusterOverlay.draw = function () {
+      const projection = this.getProjection();
+      const base = 48;
+      const dimension = c => `${base}px`;
+      const clusters = self.clusterLayer.selectAll('svg')
+        .each(transform)
+        .data(clusterData)
+        .enter().append('svg')
+        .each(transform)
+        .attr('class', 'cluster')
+        .style('height', dimension)
+        .style('width', dimension);
+
+      clusters.append('circle')
+        .attr('r', `${base / 2}px`)
+        .attr("cx", `${base / 2}px`)
+        .attr("cy", `${base / 2}px`);
+
+      function transform (cluster) {
+        console.log('ah', cluster);
+        let elem = this;
+        cluster = new google.maps.LatLng(cluster.y, cluster.x);
+        cluster = projection.fromLatLngToDivPixel(cluster);
+        console.log('oh', cluster);
+        return d3.select(elem)
+          .style("left", cluster.x + "px")
+          .style("top", cluster.y + "px");
+      }
+    };
+  };
+
+  self.clusterOverlay.onRemove = function () {
+    if (self.clusterLayer) {
+      self.clusterLayer.selectAll('.cluster').remove();
+    }
+  };
+
+  self.clusterOverlay.setMap(self.map);
 };

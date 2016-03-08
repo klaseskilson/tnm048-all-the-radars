@@ -21,63 +21,8 @@ html, body, #map, .loading-outer {
   padding: 15px;
 }
 
-.taxis, .taxis svg {
-  position: absolute;
-}
-
-.taxis .marker {
-  margin: 0;
-  width: 12px;
-  height: 12px;
-}
-
-.marker circle {
-  fill: rgba(255, 0, 0, .5);
-  stroke: darkred;
-  stroke-width: 1px;
-  cursor: pointer;
-}
-
-.taxis circle:hover {
-  fill: green;
-}
-
 svg {
-  font: 10px sans-serif;
-}
-
-#timelineParent {
-  display: flex;
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  background: $background;
-  height: $timelineHeight;
-  padding: $padding;
-}
-
-#hourTimeLine {
-  width: 70%;
-  box-sizing: border-box;
-}
-
-#minTimeLine {
-  width: 30%;
-  box-sizing: border-box;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.brush .extent {
-  stroke: #fff;
-  fill-opacity: .125;
-  shape-rendering: crispEdges;
+  font: 10px 'Open Sans', sans-serif;
 }
 
 input {
@@ -94,6 +39,7 @@ button {
   color: #fff;
   border: none;
   border-bottom: 2px solid darken($blue, 20%);
+  letter-spacing: .09em;
   font-size: .9rem;
   text-transform: uppercase;
 

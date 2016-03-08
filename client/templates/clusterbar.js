@@ -48,8 +48,10 @@ Template.clusterForm.events({
           date: 1,
         },
       }).fetch();
-      cluster(data, cars, radius).then((data) => {
-        console.log('DONE!', data);
+      cluster(data, cars, radius).then((clusters) => {
+        console.log('DONE!', clusters);
+        // send clusters to map
+        window.theMap.addClusters(clusters);
         // stop loading indicator
         clustering.set(false);
         // remove cached data!
@@ -66,14 +68,31 @@ Template.clusterForm.events({
 
 function cluster (data, cars, radius) {
   return new Promise((resolve, reject) => {
-    if (data.lenght === 0) {
+    if (data.length === 0) {
       reject(cars);
       return;
     }
 
     // simulate loading with setTimeout
     setTimeout(() => {
-      resolve(cars);
+      const clusters = [
+        {
+          x: 18.1621513366699,
+          y: 59.3108901977539,
+          taxis: [1,2,3,4,5,6,7,8,9],
+        },
+        {
+          x: 18.0748252868652,
+          y: 59.326530456543,
+          taxis: [1,2,3,4,5,6],
+        },
+        {
+          x: 18.056266784668,
+          y: 59.328182220459,
+          taxis: [1,2,3,4,5,6,7,8,9,1,2,3,3,4,5,56,6,7],
+        },
+      ]
+      resolve(clusters);
     }, 3000);
 
     //
