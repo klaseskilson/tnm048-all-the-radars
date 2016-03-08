@@ -7,17 +7,13 @@ Template.clusterbar.helpers({
 });
 
 Template.clusterForm.onCreated(function () {
-  var template = this;
-
-  template.autorun(() => {
-
-    // template.subscribe('getTaxis')
-
-	});
+  this.clustering = new ReactiveVar(false);
 });
 
-Template.clusterForm.onCreated(function () {
-  this.clustering = new ReactiveVar(false);
+Template.clusterForm.onDestroyed(function () {
+  if (this.subs) {
+    this.subs.stop();
+  }
 });
 
 Template.clusterForm.helpers({
@@ -32,32 +28,53 @@ Template.clusterForm.events({
     const cars = parseInt(event.currentTarget.cars.value);
     const radius = parseFloat(event.currentTarget.radius.value);
 
+    // start loading indicator
     const clustering = Template.instance().clustering;
     clustering.set(true);
 
-    cluster(cars, radius).then((data) => {
-      console.log('DONE!', data);
-      clustering.set(false);
-    }, (error) => {
-      console.log('ERROR!', error);
-      clustering.set(false);
+    // subscribe to data and wait for it
+    const { range } = Session.get('selectedHour');
+    Template.instance().subs = Meteor.subscribe('getTaxis', range, () => {
+      const { range } = Session.get('selectedHour');
+      const data = TaxisCollection.find({
+        date: {
+          $gte: range[0],
+          $lte: range[1]
+        },
+      }, {
+        sort: {
+          taxiId: 1,
+          date: 1,
+        },
+      }).fetch();
+      cluster(data, cars, radius).then((data) => {
+        console.log('DONE!', data);
+        // stop loading indicator
+        clustering.set(false);
+        // remove cached data!
+        Template.instance().subs.stop();
+      }, (error) => {
+        console.log('ERROR!', error);
+        clustering.set(false);
+      });
     });
   }
 });
 
-function cluster (cars, radius) {
+function cluster (data, cars, radius) {
   return new Promise((resolve, reject) => {
+    if (data.lenght === 0) {
+      reject(cars);
+      return;
+    }
+
+    // simulate loading with setTimeout
+    setTimeout(() => {
+      resolve(cars);
+    }, 3000);
+
     //
     // cluster here!
     //
-
-    if (cars > 10) {
-      // simulate loading with setTimeout
-      setTimeout(() => {
-        resolve(cars);
-      }, 3000);
-    } else {
-      reject(cars);
-    }
   });
 }

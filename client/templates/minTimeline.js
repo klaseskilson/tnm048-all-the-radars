@@ -13,10 +13,13 @@ Template.minTimeLine.onCreated(function () {
     template.subscribe('getMinuteTimeline', hourData.range, () => {
       // this after flush thingy ensures the template is re-renderd (if needed)
       Tracker.afterFlush(() => {
-        let minuteData = TimelineCollection.find({resolution: 'minute', date: {
-          $gte: hourData.range[0],
-          $lte: hourData.range[1]
-          }}).fetch();
+        let minuteData = TimelineCollection.find({
+          resolution: 'minute',
+          date: {
+            $gte: hourData.range[0],
+            $lte: hourData.range[1]
+          },
+        }).fetch();
         mtl.drawTimeline(minuteData);
       });
     });
