@@ -7,8 +7,8 @@
       <div class="sidebar__header__exit js-exit-taxi">&times;</div>
     </div>
     {{#unless hideSidebar}}
-      {{> calendar}}
       {{> info}}
+      {{> calendar}}
     {{/unless}}
   </section>
 </template>
@@ -18,10 +18,10 @@
     <h2 class="sidebar__body__title">
       Change driver
     </h2>
-    <p>
+    <div class="form__row sidebar__form">
       <input type="number" min="10002" max="11789" step="1"
              class="js-select-driver" value="{{session 'selectedTaxiId'}}">
-    </p>
+    </div>
     {{#unless hasData}}
       <p>
         No data available for {{session 'selectedTaxiId'}}.
