@@ -85,3 +85,25 @@ input {
   padding: ($padding / 3) ($padding / 2);
   box-sizing: border-box;
 }
+
+button {
+  width: 100%;
+  padding: ($padding / 2);
+  box-sizing: border-box;
+  background: $blue;
+  color: #fff;
+  border: none;
+  border-bottom: 2px solid darken($blue, 20%);
+  font-size: .9rem;
+  text-transform: uppercase;
+
+  &:hover, &:focus {
+    background: darken($blue, 10%);
+    border-color: darken($blue, 30%);
+  }
+}
+
+label {
+  font-size: .9rem;
+  text-transform: uppercase;
+}

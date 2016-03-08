@@ -5,7 +5,37 @@
         Cluster information
       </div>
     </div>
-    {{#if hideSidebar}}
-    {{/if}}
+    {{#unless hideSidebar}}
+      {{> clusterForm}}
+    {{/unless}}
   </section>
+</template>
+
+<template name="clusterForm">
+  <div class="sidebar__body">
+    <h2 class="sidebar__body__title">
+      Find common pickup spots
+    </h2>
+
+    <form class="sidebar__form js-cluster-form">
+      <div class="form__row">
+        <label class="form__input">
+          Spot radius (km)
+          <input type="number" min="0.1" step="0.1" placeholder="Distance" value="1.5" name="radius">
+        </label>
+        <label class="form__input">
+          Minimum cars
+          <input type="number" min="1" step="1" placeholder="Cars" value="10" name="cars">
+        </label>
+      </div>
+      <div class="form__row">
+        <button disabled="{{loading}}">
+          Find spots!
+        </button>
+      </div>
+    </form>
+    {{#if loading}}
+      loading
+    {{/if}}
+  </div>
 </template>

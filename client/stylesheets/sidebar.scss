@@ -52,3 +52,16 @@
   text-transform: uppercase;
   padding: 0 ($padding / 2);
 }
+
+.form__row {
+  display: flex;
+  margin-bottom: ($padding / 2);
+}
+
+.sidebar__form {
+  padding: 0 ($padding / 2);
+}
+
+.form__input + .form__input {
+  padding-left: ($padding / 2);
+}
