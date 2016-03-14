@@ -5,9 +5,11 @@
         Pickup points
       </div>
     </div>
-    {{#unless hideSidebar}}
-      {{> clusterForm}}
-    {{/unless}}
+    <div class="sidebar__wrapper">
+      {{#unless hideSidebar}}
+        {{> clusterForm}}
+      {{/unless}}
+    </div>
   </section>
 </template>
 

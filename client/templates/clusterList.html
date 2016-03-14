@@ -7,10 +7,16 @@
 
       <div class="clusters__list">
         {{#each clusters}}
-          <div class="clusters__entry js-toggle-cluster {{expandCluster 'clusters__entry--expanded'}}">
-            <div class="entry__title">
-              {{icon 'map-marker'}} {{position}}
-              {{icon 'taxi'}} {{count}}
+          <div class="clusters__entry {{expandCluster 'clusters__entry--expanded'}}">
+            <div class="entry__title js-toggle-cluster">
+              {{icon 'bullseye'}} {{position}}
+              {{icon 'taxi'}} {{count}} bookings
+
+              {{#if expandCluster}}
+                {{icon 'chevron-down entry__control'}}
+              {{else}}
+                {{icon 'chevron-left entry__control'}}
+              {{/if}}
             </div>
             {{#if expandCluster}}
               {{> taxiList taxis = drivers}}
@@ -27,8 +33,14 @@
     <div class="entry__taxi">
       <div class="taxi__dot"></div>
       <div class="taxi__info">
-        {{position}}
-        {{coordinates}}
+        <div class="taxi__info__title">
+          {{icon 'clock-o'}} {{time}}
+          {{icon 'taxi'}} {{taxiId}}
+          {{icon 'map-marker'}} {{coordinates}}
+        </div>
+        <div class="taxi__info__address">
+          {{icon 'home'}} {{position}}
+        </div>
       </div>
     </div>
   {{/each}}

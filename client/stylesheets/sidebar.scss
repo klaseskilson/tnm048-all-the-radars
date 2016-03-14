@@ -4,15 +4,21 @@
   position: fixed;
   top: 0;
   width: $sidebarWidth;
-  max-height: unquote('calc(100% - #{$timelineHeight})');
   transition: right .2s ease-in-out;
   box-sizing: border-box;
   right: 0;
   background: $background;
+  max-height: unquote('calc(100% - #{$timelineHeight + 2 * $padding})');
+  overflow: scroll;
 }
 
 .sidebar.sidebar--hidden {
   right: - $sidebarWidth;
+}
+
+.sidebar__wrapper {
+  box-sizing: border-box;
+  height: auto;
 }
 
 .sidebar p {
@@ -69,7 +75,6 @@
 .clusters__entry {
   padding: ($padding / 2);
   font-size: .9rem;
-  cursor: pointer;
 
   & + & {
     border-top: 1px solid #e3e3e3;
@@ -83,16 +88,35 @@
   }
 }
 
+.entry__title {
+  cursor: pointer;
+}
+
 .entry__title .fa {
   color: #444;
 }
 
+.entry__control {
+  margin-top: 3px;
+  opacity: 0;
+  float: right;
+
+  .clusters__entry:hover & {
+    opacity: 1;
+  }
+}
+
 .entry__taxi {
   display: flex;
-  padding: ($padding / 2);
-  margin-left: 3px;
+  padding: ($padding / 2) $padding;
+  margin-left: 5px;
   border-left: 1px solid #e3e3e3;
   position: relative;
+  color: lighten($fontColor, 30%);
+
+  &:hover {
+    color: $fontColor;
+  }
 
   &:hover .taxi__dot,
   &--selected .taxi__dot {
@@ -109,4 +133,8 @@
   top: 50%;
   transform: translateY(-50%);
   left: -($padding / 4);
+}
+
+.taxi__info {
+  font-size: 0.85rem;
 }
