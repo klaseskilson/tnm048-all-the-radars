@@ -42,24 +42,3 @@
   </div>
   {{> clusterList clusters = clusters}}
 </template>
-
-<template name="clusterList">
-  {{#if hasClusters}}
-    <div class="sidebar__body">
-      <h2 class="sidebar__body__title">
-        Common points
-      </h2>
-
-      <div class="clusters__list">
-        {{#each clusters}}
-          <div class="clusters__entry">
-            <div class="entry__title">
-              {{icon 'map-marker'}} {{position}}
-              {{icon 'taxi'}} {{count}}
-            </div>
-          </div>
-        {{/each}}
-      </div>
-    </div>
-  {{/if}}
-</template>

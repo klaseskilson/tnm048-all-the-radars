@@ -53,6 +53,12 @@ Template.clusterForm.events({
         },
       }).fetch();
       cluster(data, cars, radius).then((clusters) => {
+        // append expand and hover control
+        clusters = _.map(clusters, c => {
+          c.expand = new ReactiveVar(false);
+          c.hover = new ReactiveVar(false);
+          return c;
+        });
         // send clusters to map and list
         window.theMap.addClusters(clusters, cars);
         instance.clusters.set(clusters);
@@ -68,19 +74,3 @@ Template.clusterForm.events({
     });
   }
 });
-
-Template.clusterList.helpers({
-  hasClusters () {
-    return this.clusters.length > 0;
-  },
-
-  position () {
-    const precision = 6;
-    return `${this.x_coord.toPrecision(precision)}, ${this.y_coord.toPrecision(precision)}`
-  },
-
-  count () {
-    return this.drivers.length;
-  },
-});
-

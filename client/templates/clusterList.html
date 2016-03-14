@@ -1,0 +1,35 @@
+<template name="clusterList">
+  {{#if hasClusters}}
+    <div class="sidebar__body">
+      <h2 class="sidebar__body__title">
+        Common points
+      </h2>
+
+      <div class="clusters__list">
+        {{#each clusters}}
+          <div class="clusters__entry js-toggle-cluster {{expandCluster 'clusters__entry--expanded'}}">
+            <div class="entry__title">
+              {{icon 'map-marker'}} {{position}}
+              {{icon 'taxi'}} {{count}}
+            </div>
+            {{#if expandCluster}}
+              {{> taxiList taxis = drivers}}
+            {{/if}}
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  {{/if}}
+</template>
+
+<template name="taxiList">
+  {{#each taxis}}
+    <div class="entry__taxi">
+      <div class="taxi__dot"></div>
+      <div class="taxi__info">
+        {{position}}
+        {{coordinates}}
+      </div>
+    </div>
+  {{/each}}
+</template>
