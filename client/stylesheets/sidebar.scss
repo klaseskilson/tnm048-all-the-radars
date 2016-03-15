@@ -80,7 +80,8 @@
     border-top: 1px solid #e3e3e3;
   }
 
-  &:hover {
+  &:hover,
+  &--hovered {
     background: #eeeeee;
   }
   &--expanded:hover {

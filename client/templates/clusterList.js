@@ -15,6 +15,10 @@ Template.clusterList.helpers({
   expandCluster (value = true) {
     return this.expand.get() ? value : false;
   },
+
+  hoverClass () {
+    return this.hover.get() ? 'clusters__entry--hovered' : '';
+  },
 });
 
 Template.taxiList.onCreated(function () {

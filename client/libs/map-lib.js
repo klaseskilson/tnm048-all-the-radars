@@ -44,7 +44,7 @@ GMap.prototype.addData = function(data) {
 
       marker.append("circle")
         .attr("r", radius)
-        .on('click', self.select.bind(self))
+        .on('click', self.selectDot.bind(self))
         .style('stroke-width', stroke)
         .attr("cx", radius + stroke)
         .attr("cy", radius + stroke)
@@ -72,7 +72,7 @@ GMap.prototype.addData = function(data) {
   self.pointsOverlay.setMap(self.map);
 };
 
-GMap.prototype.select = function (datum) {
+GMap.prototype.selectDot = function (datum) {
   let old = Session.get('mapDataContext');
   let startDate = moment(old.range[0]).set({ 'hour': 0, 'minute': 0, 'second': 0, });
   let newContext = _.extend(old, {
@@ -99,6 +99,13 @@ GMap.prototype.addClusters = function (clusterData, minLength = 10) {
         .attr("class", "clusters");
 
     self.clusterOverlay.draw = function () {
+      const selectCluster = cluster => {
+        const expand = cluster.expand;
+        expand.set(!expand.get());
+      };
+      const hoverCluster = isHovered => cluster => {
+        cluster.hover.set(isHovered);
+      };
       const projection = this.getProjection();
       const base = 24,
             strokeWidth = 2;
@@ -115,7 +122,10 @@ GMap.prototype.addClusters = function (clusterData, minLength = 10) {
       clusters.append('circle')
         .attr('r', c => `${dimension(c) / 2 - 2 * strokeWidth}px`)
         .attr("cx", c => `${dimension(c) / 2 - 2 * strokeWidth}px`)
-        .attr("cy", c => `${dimension(c) / 2 - 2 * strokeWidth}px`);
+        .attr("cy", c => `${dimension(c) / 2 - 2 * strokeWidth}px`)
+        .on('click', selectCluster)
+        .on('mouseenter', hoverCluster(true))
+        .on('mouseleave', hoverCluster(false));
 
       function transform (cluster) {
         let elem = this;

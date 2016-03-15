@@ -7,7 +7,7 @@
 
       <div class="clusters__list">
         {{#each clusters}}
-          <div class="clusters__entry {{expandCluster 'clusters__entry--expanded'}}">
+          <div class="clusters__entry {{expandCluster 'clusters__entry--expanded'}} {{hoverClass}}">
             <div class="entry__title js-toggle-cluster">
               {{icon 'bullseye'}} {{position}}
               {{icon 'taxi'}} {{count}} bookings
