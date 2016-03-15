@@ -38,10 +38,7 @@ Template.taxiList.onCreated(function () {
 
   const data = Template.currentData();
   data.taxis = _.chain(data.taxis)
-    .sortBy(taxi => {
-      console.log(taxi.date.getTime())
-      return taxi.date.getTime()
-    })
+    .sortBy(taxi => taxi.date.getTime())
     .map(taxi => {
       taxi.positionName = new ReactiveVar('');
       const position = {

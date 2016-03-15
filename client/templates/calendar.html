@@ -2,9 +2,10 @@
   <div class="sidebar__body">
     <h2 class="sidebar__body__title">
       {{#unless Template.subscriptionsReady}}
+        {{icon 'circle-o-notch fa-spin'}}
         Counting bookings...
       {{else}}
-        Unique bookings
+        Bookings
       {{/unless}}
     </h2>
 

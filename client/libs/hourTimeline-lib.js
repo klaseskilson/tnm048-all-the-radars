@@ -151,6 +151,9 @@ hourTimeline.prototype.drawTimeline = function(data) {
     dataContext.range = [startHour, endMin];
     dataContext.query = {};
     Session.set('mapDataContext', dataContext);
+
+    // reset cluster overlay
+    window.theMap.addClusters([]);
   };
 
   function closestMinute(testDate) {

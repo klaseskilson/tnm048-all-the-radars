@@ -8,7 +8,7 @@ GMap.prototype.setup = function(node) {
   this.map = new google.maps.Map(node, {
     zoom: 11,
     center: new google.maps.LatLng(59.33, 18.03),
-    mapTypeId: google.maps.MapTypeId.TERRAIN,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
     disableDefaultUI: true,
   });
 };
@@ -44,7 +44,7 @@ GMap.prototype.addData = function(data) {
 
       marker.append("circle")
         .attr("r", radius)
-        .on('click', self.select)
+        .on('click', self.select.bind(self))
         .style('stroke-width', stroke)
         .attr("cx", radius + stroke)
         .attr("cy", radius + stroke)
@@ -82,11 +82,14 @@ GMap.prototype.select = function (datum) {
     },
   });
 
+  // empty cluster overlay
+  this.addClusters([]);
+
   Session.set('selectedTaxiId', datum.taxiId);
   Session.set('mapDataContext', newContext);
 };
 
-GMap.prototype.addClusters = function (clusterData, minLength) {
+GMap.prototype.addClusters = function (clusterData, minLength = 10) {
   let self = this;
   // prepare new overlay
   self.clusterOverlay = self.clusterOverlay || new google.maps.OverlayView();
