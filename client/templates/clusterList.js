@@ -21,6 +21,21 @@ Template.clusterList.helpers({
   },
 });
 
+Template.clusterList.events({
+  'click .js-toggle-cluster' (event) {
+    event.preventDefault();
+    this.expand.set(!this.expand.get());
+  },
+
+  'mouseenter .js-toggle-cluster' () {
+    this.hover.set(true);
+  },
+
+  'mouseleave .js-toggle-cluster' () {
+    this.hover.set(false);
+  },
+});
+
 Template.taxiList.onCreated(function () {
   const geocoder = new google.maps.Geocoder();
 
@@ -69,11 +84,3 @@ Template.taxiList.helpers({
     return moment(this.date).format('HH:mm');
   },
 });
-
-Template.clusterList.events({
-  'click .js-toggle-cluster' (event) {
-    event.preventDefault();
-    this.expand.set(!this.expand.get());
-  },
-});
-
