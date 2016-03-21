@@ -3,6 +3,14 @@ Template.clusterList.helpers({
     return this.clusters.length > 0;
   },
 
+  selectedHour() {
+    let { range } = Session.get('selectedHour') || {};
+    range = range || {};
+    const from = moment(range[0]).format('MMM Do, HH:mm'),
+      to = moment(range[1]).format('HH:mm');
+    return `${from} - ${to}`;
+  },
+
   position () {
     const precision = 6;
     return `${this.x_coord.toPrecision(precision)}, ${this.y_coord.toPrecision(precision)}`;
