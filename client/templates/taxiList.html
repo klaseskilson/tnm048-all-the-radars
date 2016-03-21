@@ -1,0 +1,17 @@
+<template name="taxiList">
+  {{#each taxis}}
+    <div class="entry__taxi">
+      <div class="taxi__dot"></div>
+      <div class="taxi__info">
+        <div class="taxi__info__title">
+          {{icon 'clock-o'}} {{time}}
+          {{icon 'taxi'}} {{taxiId}}
+          {{icon 'map-marker'}} {{coordinates}}
+        </div>
+        <div class="taxi__info__address">
+          {{icon 'home'}} {{position}}
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</template>
