@@ -2,10 +2,10 @@ GMap = function () {};
 
 /**
  * create map
- * @param {HTMLNode] node - the html node to append the map to
+ * @param {HTMLElement} element - the html element to append the map to
  */
-GMap.prototype.setup = function(node) {
-  this.map = new google.maps.Map(node, {
+GMap.prototype.setup = function(element) {
+  this.map = new google.maps.Map(element, {
     zoom: 11,
     center: new google.maps.LatLng(59.33, 18.03),
     mapTypeId: google.maps.MapTypeId.ROADMAP,
