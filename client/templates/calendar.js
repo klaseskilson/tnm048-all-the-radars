@@ -1,22 +1,21 @@
 let getUniqueBookings = (entries) => {
-  let count = 0;
+  let selected = [];
 
   _.reduce(entries, (old, entry) => {
     if (entry.hired !== old) {
-      if (entry.hired) ++count;
+      if (entry.hired) selected.push(entry);
       return entry.hired;
     }
     return old;
   }, null);
 
-  return count;
+  return selected;
 };
 
 Template.calendar.onCreated(function () {
-  let template = this;
-  template.autorun(() => {
+  this.autorun(() => {
     this.oldSubs = this.subs || {};
-    this.subs = template.subscribe('getTaxisById', Session.get('selectedTaxiId'));
+    this.subs = this.subscribe('getTaxisById', Session.get('selectedTaxiId'));
     // remove old subs cache
     if (this.subs !== this.oldSubs && this.oldSubs.subscriptionId) {
       this.oldSubs.stop();
@@ -27,8 +26,9 @@ Template.calendar.onCreated(function () {
 Template.calendar.helpers({
   weeks () {
     const format = 'M_D';
-    let taxiId = Session.get('selectedTaxiId');
-    let taxiData = {};
+    const taxiId = Session.get('selectedTaxiId');
+    const range = Session.get('mapDataContext').range;
+    const taxiData = {};
 
     TaxisCollection.find({
       taxiId: taxiId,
@@ -44,34 +44,40 @@ Template.calendar.helpers({
       taxiData[key].push(entry);
     });
 
-    let weeksNumbers = [0, 1, 2, 3, 4];
-    let firstMarch = moment([2013, 2, 1]);
-    let offset = firstMarch.day();
-    let firstDay = moment(firstMarch).subtract(offset, 'days');
+    const weeksNumbers = [0, 1, 2, 3, 4];
+    const firstMarch = moment([2013, 2, 1]);
+    const offset = firstMarch.day();
+    const firstDay = moment(firstMarch).subtract(offset, 'days');
 
-    let counts = [];
+    const counts = [];
 
     // change from array of numbers to array of objects
     return weeksNumbers.map((week) => {
-      let weekNumber = week;
-      let dayNumbers = [1, 2, 3, 4, 5, 6, 7];
-      let days = dayNumbers.map((dayInWeek) => {
-        let day = moment(firstDay).add(dayInWeek + weekNumber * 7, 'days');
-        let name = day.format('D / M');
-        let weekDay = day.format('ddd');
-        let isMarch = day.month() === 2;
-        let dayData = taxiData[day.format(format)];
-        let count = dayData && getUniqueBookings(dayData);
+      const weekNumber = week;
+      const dayNumbers = [1, 2, 3, 4, 5, 6, 7];
+      const days = dayNumbers.map((dayInWeek) => {
+        const day = moment(firstDay).add(dayInWeek + weekNumber * 7, 'days');
+        const name = day.format('D / M');
+        const weekDay = day.format('ddd');
+        const isMarch = day.month() === 2;
+        const dayData = taxiData[day.format(format)];
+        const bookings = dayData && getUniqueBookings(dayData);
+        const count = bookings && bookings.length;
 
         counts.push(count);
+
+        if (day.isSame(range[0], 'day')) {
+          this.taxiList.set(bookings);
+        }
 
         return {
           day,
           name,
           weekDay,
           isMarch,
+          bookings,
           count,
-        }
+        };
       });
 
       return {
@@ -80,6 +86,10 @@ Template.calendar.helpers({
         counts,
       };
     });
+  },
+
+  taxis () {
+    return this.taxiList.get();
   },
 });
 
@@ -114,5 +124,6 @@ Template.week.events({
       ]
     });
     Session.set('mapDataContext', newContext);
+    Template.parentData().taxiList.set(this.bookings);
   }
 });

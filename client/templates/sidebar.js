@@ -7,6 +7,10 @@ Template.sidebar.helpers({
   driver () {
     return Session.get('selectedTaxiId');
   },
+
+  taxiList () {
+    return new ReactiveVar([]);
+  },
 });
 
 Template.sidebar.events({
