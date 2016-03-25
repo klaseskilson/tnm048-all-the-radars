@@ -44,3 +44,19 @@
     fill: rgba($blue, .95);
   }
 }
+
+.tooltip {
+  background: rgba(#111, .8);
+  color: #fff;
+  border-radius: 2px;
+  padding: 2px 4px;
+  display: inline-block;
+  position: fixed;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.07s;
+
+  &--show {
+    opacity: 1;
+  }
+}

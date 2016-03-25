@@ -37,11 +37,34 @@ GMap.prototype.addData = function(data) {
   self.pointsOverlay.onAdd = function() {
     self.pointsLayer = self.pointsLayer || d3.select(this.getPanes().overlayMouseTarget).append("div")
       .attr("class", "taxis");
+    self.toolTip = self.toolTip || d3.select(this.getPanes().overlayMouseTarget)
+        .append('div').attr('class', 'tooltip');
 
     self.pointsOverlay.draw = function() {
       const projection = this.getProjection(),
         stroke = 1,
         radius = 4;
+
+      const showTooltip = function (taxi) {
+        const { left, top } = this.parentElement.getBoundingClientRect();
+        const { taxiId, date, hired } = taxi;
+        const hiredClass = hired ? 'times-circle' : 'check-circle',
+              hiredText = hired ? 'Hired' : 'Available',
+              time = moment(date).format('HH:mm');
+        self.toolTip.html(`
+            <span class="fa fa-${hiredClass}"></span> ${hiredText}
+            <span class="fa fa-clock-o"></span> ${time}
+            <span class="fa fa-taxi"></span> ${taxiId}
+          `)
+          .style({
+            left: `${left}px`,
+            top: `${top - 17}px`,
+          })
+          .classed('tooltip--show', true);
+      };
+      const hideTooltip = function (taxi) {
+        self.toolTip.classed('tooltip--show', false);
+      };
 
       const marker = self.pointsLayer.selectAll("svg")
         .data(data)
@@ -60,6 +83,8 @@ GMap.prototype.addData = function(data) {
         .style('stroke-width', stroke)
         .attr("cx", radius + stroke)
         .attr("cy", radius + stroke)
+        .on('mouseenter', showTooltip)
+        .on('mouseleave', hideTooltip)
         .style('fill', d => d.hired ? 'red' : 'green')
         .style('stroke', d => d.hired ? 'darkred' : 'darkgreen');
     };
