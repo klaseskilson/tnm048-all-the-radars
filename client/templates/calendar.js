@@ -88,6 +88,11 @@ Template.calendar.helpers({
     });
   },
 
+  date () {
+    const { range } = Session.get('mapDataContext');
+    return moment(range[0]).format('ddd MMM Do');
+  },
+
   taxis () {
     return this.taxiList.get();
   },

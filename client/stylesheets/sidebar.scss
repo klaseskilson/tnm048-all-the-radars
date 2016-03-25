@@ -57,6 +57,11 @@
   font-size: 0.9rem;
   text-transform: uppercase;
   padding: 0 ($padding / 2);
+
+  // flip margins
+  &--margin-top {
+    margin: ($padding / 2) 0 0;
+  }
 }
 
 .form__row {
@@ -84,6 +89,7 @@
   &--hovered {
     background: #eeeeee;
   }
+
   &--expanded:hover {
     background: #ffffff;
   }
