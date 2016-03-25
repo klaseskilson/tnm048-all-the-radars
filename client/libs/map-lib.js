@@ -1,5 +1,17 @@
 GMap = function () {};
 
+// transform lat/lon coordinates to pixel coordinates, private helper
+const toPixelCoordinates = function (projection) {
+  return function transformCallback (d) {
+    let elem = this;
+    d = new google.maps.LatLng(d.y_coord, d.x_coord);
+    d = projection.fromLatLngToDivPixel(d);
+    return d3.select(elem)
+      .style("left", d.x + "px")
+      .style("top", d.y + "px");
+  }
+};
+
 /**
  * create map
  * @param {HTMLElement} element - the html element to append the map to
@@ -27,15 +39,15 @@ GMap.prototype.addData = function(data) {
       .attr("class", "taxis");
 
     self.pointsOverlay.draw = function() {
-      var projection = this.getProjection(),
+      const projection = this.getProjection(),
         stroke = 1,
         radius = 4;
 
-      var marker = self.pointsLayer.selectAll("svg")
+      const marker = self.pointsLayer.selectAll("svg")
         .data(data)
-        .each(transform)
+        .each(toPixelCoordinates(projection))
         .enter().append("svg")
-        .each(transform)
+        .each(toPixelCoordinates(projection))
         .attr("class", "marker")
         .style({
           width: `${(radius + stroke) * 2}px`,
@@ -50,15 +62,6 @@ GMap.prototype.addData = function(data) {
         .attr("cy", radius + stroke)
         .style('fill', d => d.hired ? 'red' : 'green')
         .style('stroke', d => d.hired ? 'darkred' : 'darkgreen');
-
-      function transform (d) {
-        let elem = this;
-        d = new google.maps.LatLng(d.y_coord, d.x_coord);
-        d = projection.fromLatLngToDivPixel(d);
-        return d3.select(elem)
-          .style("left", (d.x) + "px")
-          .style("top", (d.y) + "px");
-      }
     };
   };
 
@@ -135,22 +138,12 @@ GMap.prototype.addClusters = function (clusterData, minLength = 10) {
             strokeWidth = 2;
       const dimension = c => base + (c.drivers.length - minLength);
 
-      // transform lat/lon coordinates to pixel coordinates
-      const transform = function (cluster) {
-        let elem = this;
-        cluster = new google.maps.LatLng(cluster.y_coord, cluster.x_coord);
-        cluster = projection.fromLatLngToDivPixel(cluster);
-        return d3.select(elem)
-          .style("left", cluster.x + "px")
-          .style("top", cluster.y + "px");
-      };
-
       // append the clusters!
       const clusters = self.clusterLayer.selectAll('svg')
-        .each(transform)
+        .each(toPixelCoordinates(projection))
         .data(clusterData)
         .enter().append('svg')
-        .each(transform)
+        .each(toPixelCoordinates(projection))
         .attr('class', 'cluster')
         .style('height', c => `${dimension(c)}px`)
         .style('width', c => `${dimension(c)}px`);
